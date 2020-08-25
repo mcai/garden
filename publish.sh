@@ -1,1 +1,1 @@
-npm publish
+tsc && npm publish
