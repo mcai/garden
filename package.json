@@ -1,9 +1,17 @@
 {
   "name": "@itecgo/garden",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "garden library",
-  "main": "./build/index.js",
-  "types": "./build/index.d.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcai/garden.git"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "build/index.js",
+    "build/index.d.ts"
+  ],
   "scripts": {
     "build": "tsc"
   },
