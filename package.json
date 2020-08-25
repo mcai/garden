@@ -1,6 +1,6 @@
 {
   "name": "@itecgo/garden",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "description": "garden library",
   "repository": {
     "type": "git",
@@ -9,8 +9,8 @@
   "files": [
     "src/",
     "README.md",
-    "build/index.js",
-    "build/index.d.ts"
+    "index.js",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "tsc"

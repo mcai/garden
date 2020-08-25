@@ -1,3 +1,5 @@
 export class HelloWorld {
-    // TODO
+    static hello() {
+        console.log("Hello world.");
+    }
 }
