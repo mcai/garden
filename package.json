@@ -1,12 +1,11 @@
 {
   "name": "@itecgo/garden",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "description": "garden library",
   "main": "./build/index.js",
   "types": "./build/index.d.js",
   "scripts": {
-    "prepare": "tsc",
-    "publish": "npm publish"
+    "build": "tsc"
   },
   "author": "",
   "license": "MIT",
