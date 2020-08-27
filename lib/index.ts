@@ -4,7 +4,7 @@ import {User} from "./entity/User";
 import {MongoConnectionOptions} from "typeorm/driver/mongodb/MongoConnectionOptions";
 
 export async function testConnection(option: MongoConnectionOptions) {
-    let connection = await createConnection();
+    let connection = await createConnection(option);
 
     let user = new User();
     user.name = "Timber";
