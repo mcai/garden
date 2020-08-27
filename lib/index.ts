@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import {User} from "./entity/User";
+import {MongoConnectionOptions} from "typeorm/driver/mongodb/MongoConnectionOptions";
 
-export async function testConnection() {
+export async function testConnection(option: MongoConnectionOptions) {
     let connection = await createConnection();
 
     let user = new User();
