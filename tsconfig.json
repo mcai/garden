@@ -1,12 +1,11 @@
 {
    "compilerOptions": {
       "target": "esnext",
-      "module": "commonjs",
+      "module": "system",
       "moduleResolution": "node",
       "lib": ["es2017", "es7", "es6", "dom"],
       "declaration": true,
-      "outDir": ".",
-      "baseUrl": "./src",
+      "outFile": "index.js",
       "strict": true,
       "esModuleInterop": true,
       "emitDecoratorMetadata": true,
