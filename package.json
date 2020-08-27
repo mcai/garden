@@ -1,11 +1,12 @@
 {
    "name": "@itecgo/garden",
-   "version": "0.0.16",
+   "version": "0.0.17",
    "description": "garden library",
    "repository": {
       "type": "git",
       "url": "git+https://github.com/mcai/garden.git"
    },
+   "main": "./dist/index.js",
    "files": [
       "README.md",
       "dist"
