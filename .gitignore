@@ -1,9 +1,6 @@
 .idea/
 .vscode/
 node_modules/
-build/
+dist/
 tmp/
 temp/
-**/*.d.ts
-**/*.js.map
-**/*.js

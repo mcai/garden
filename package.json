@@ -1,20 +1,19 @@
 {
    "name": "@itecgo/garden",
-   "version": "0.0.14",
+   "version": "0.0.15",
    "description": "garden library",
    "repository": {
       "type": "git",
       "url": "git+https://github.com/mcai/garden.git"
    },
    "files": [
-      "src/",
       "README.md",
-      "index.js",
-      "index.d.ts"
+      "dist"
    ],
    "scripts": {
       "build": "tsc",
-      "start": "ts-node src/index.ts"
+      "prepare": "npm run build",
+      "start": "ts-node lib/index.ts"
    },
    "author": "Min Cai",
    "license": "MIT",
