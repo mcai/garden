@@ -1,20 +1,14 @@
-import "reflect-metadata";
-import {createConnection} from "typeorm";
-import {User} from "./entities/User";
-import {MongoConnectionOptions} from "typeorm/driver/mongodb/MongoConnectionOptions";
+import {connect, model, Schema} from "mongoose";
 
-export async function testConnection(option: MongoConnectionOptions) {
-    let connection = await createConnection(option);
+export async function testConnection() {
+    let connectionUris = "mongodb://root:B7CnXzE2XaJScqd@dds-8vb99c1b109c33b41.mongodb.zhangbei.rds.aliyuncs.com:3717,dds-8vb99c1b109c33b42.mongodb.zhangbei.rds.aliyuncs.com:3717/admin?replicaSet=mgset-500932596";
 
-    let user = new User();
-    user.name = "Timber";
-    user.password = "Saw";
+    await connect(connectionUris, {useNewUrlParser: true, useUnifiedTopology: true});
 
-    await connection.manager.save(user);
+    let Cat = model('Cat', new Schema({name: String}));
 
-    let users = await connection.manager.find(User);
+    let kitty = new Cat({name: 'Zildjian'});
+    await kitty.save();
 
-    users.forEach(user => {
-        console.log(`user, name: ${user.name}, password: ${user.password}`);
-    });
+    console.log('meow');
 }
