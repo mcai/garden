@@ -1,5 +1,19 @@
-export class HelloWorld {
-    static hello() {
-        console.log("Hello world.");
-    }
+import "reflect-metadata";
+import {createConnection} from "typeorm";
+import {User} from "./entity/User";
+
+export async function testConnection() {
+    let connection = await createConnection();
+
+    let user = new User();
+    user.name = "Timber";
+    user.password = "Saw";
+
+    await connection.manager.save(user);
+
+    let users = await connection.manager.find(User);
+
+    users.forEach(user => {
+        console.log(`user, name: ${user.name}, password: ${user.password}`);
+    });
 }
