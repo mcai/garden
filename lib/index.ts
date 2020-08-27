@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import {User} from "./entity/User";
+import {User} from "./entities/User";
 import {MongoConnectionOptions} from "typeorm/driver/mongodb/MongoConnectionOptions";
 
 export async function testConnection(option: MongoConnectionOptions) {
