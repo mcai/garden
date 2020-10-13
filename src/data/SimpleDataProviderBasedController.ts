@@ -18,44 +18,43 @@ export class SimpleDataProviderBasedController implements SimpleController {
         await this.dataProvider.connect();
 
         app.get(`/${this.resources}/all`, async (req, res) => {
-            const orderings = req.query.orderings as any;
-            const filter = req.query as any;
-            const result = await this.dataProvider.all(orderings, filter);
+            const { orderings, ...filter } = req.query;
+            const result = await this.dataProvider.all(orderings as any, filter as any);
             return res.json(result);
         });
 
         app.get(`/${this.resources}/find`, async (req, res) => {
-            const pageSize = parseInt(req.query.pageSize as any);
-            const pageNum = parseInt(req.query.pageNum as any);
-            const orderings = req.query.orderings as any;
-            const filter = req.query as any;
-            const result = await this.dataProvider.find(pageSize, pageNum, orderings, filter);
+            const { pageSize, pageNum, orderings, ...filter } = req.query;
+            const result = await this.dataProvider.find(
+                parseInt(pageSize as any),
+                parseInt(pageNum as any),
+                orderings as any,
+                filter as any,
+            );
             return res.json(result);
         });
 
         app.get(`/${this.resources}/one`, async (req, res) => {
-            const filter = req.query as any;
-            const result = await this.dataProvider.one(filter);
+            const { ...filter } = req.query;
+            const result = await this.dataProvider.one(filter as any);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/create`, async (req, res) => {
-            const data = req.body as any;
+            const { ...data } = req.body;
             const result = await this.dataProvider.create(data);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/update`, async (req, res) => {
-            const id = parseInt(req.body.id as any);
-            const data = req.body as any;
-            const result = await this.dataProvider.update(id, data);
+            const { id, ...data } = req.body;
+            const result = await this.dataProvider.update(parseInt(id as any), data as any);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/remove`, async (req, res) => {
-            const id = parseInt(req.body.id as any);
-            const data = req.body as any;
-            await this.dataProvider.remove(id, data);
+            const { id, ...data } = req.body;
+            await this.dataProvider.remove(parseInt(id as any), data as any);
             return res.json({});
         });
     }
