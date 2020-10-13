@@ -3,17 +3,17 @@ import cors from "cors";
 import {SimpleDataProviderServer} from "./SimpleDataProviderServer";
 
 export class SimpleHttpServer {
-    name: string;
     dataProvider: SimpleDataProviderServer;
+    resource: string;
     port: number;
 
     constructor(
-        name: string,
         dataProvider: SimpleDataProviderServer,
+        resource: string,
         port: number
     ) {
-        this.name = name;
         this.dataProvider = dataProvider;
+        this.resource = resource;
         this.port = port;
     }
 
@@ -25,7 +25,7 @@ export class SimpleHttpServer {
 
         app.use(cors());
 
-        app.get(`/${name}/all`, (req, res) => {
+        app.get(`/${this.resource}/all`, (req, res) => {
             let orderings = req.query.orderings as any;
             let filter = req.query.filter as any;
 
@@ -35,7 +35,7 @@ export class SimpleHttpServer {
             ));
         });
 
-        app.get(`/${name}/find`, (req, res) => {
+        app.get(`/${this.resource}/find`, (req, res) => {
             let pageSize = req.query.pageSize as any;
             let pageNum = req.query.pageNum as any;
             let orderings = req.query.orderings as any;
@@ -49,7 +49,7 @@ export class SimpleHttpServer {
             ));
         });
 
-        app.get(`/${name}/one`, (req, res) => {
+        app.get(`/${this.resource}/one`, (req, res) => {
             let filter = req.query.filter as any;
 
             return res.json(this.dataProvider.one(
@@ -57,7 +57,7 @@ export class SimpleHttpServer {
             ));
         });
 
-        app.post(`/${name}/create`, (req, res) => {
+        app.post(`/${this.resource}/create`, (req, res) => {
             let data = req.body.data as any;
 
             return res.json(this.dataProvider.create(
@@ -65,7 +65,7 @@ export class SimpleHttpServer {
             ));
         });
 
-        app.post(`/${name}/update`, (req, res) => {
+        app.post(`/${this.resource}/update`, (req, res) => {
             let id = req.body.id as any;
             let data = req.body.data as any;
 
@@ -75,7 +75,7 @@ export class SimpleHttpServer {
             ));
         });
 
-        app.post(`/${name}/remove`, (req, res) => {
+        app.post(`/${this.resource}/remove`, (req, res) => {
             let id = req.body.id as any;
             let data = req.body.data as any;
 
