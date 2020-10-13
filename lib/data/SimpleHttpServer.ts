@@ -21,9 +21,7 @@ export class SimpleHttpServer {
         let app = express();
 
         app.use(express.json());
-        app.use(express.urlencoded({
-            extended: true
-        }));
+        app.use(express.urlencoded());
 
         app.use(cors());
 
@@ -31,7 +29,7 @@ export class SimpleHttpServer {
             let orderings = req.query.orderings as any;
             let filter = req.query.filter as any;
 
-            return res.send(this.dataProvider.all(
+            return res.json(this.dataProvider.all(
                 orderings,
                 filter
             ));
@@ -43,7 +41,7 @@ export class SimpleHttpServer {
             let orderings = req.query.orderings as any;
             let filter = req.query.filter as any;
 
-            return res.send(this.dataProvider.find(
+            return res.json(this.dataProvider.find(
                 pageSize,
                 pageNum,
                 orderings,
@@ -54,7 +52,7 @@ export class SimpleHttpServer {
         app.get(`/${name}/one`, (req, res) => {
             let filter = req.query.filter as any;
 
-            return res.send(this.dataProvider.one(
+            return res.json(this.dataProvider.one(
                 filter
             ));
         });
@@ -62,7 +60,7 @@ export class SimpleHttpServer {
         app.post(`/${name}/create`, (req, res) => {
             let data = req.body.data as any;
 
-            return res.send(this.dataProvider.create(
+            return res.json(this.dataProvider.create(
                 data
             ));
         });
@@ -71,7 +69,7 @@ export class SimpleHttpServer {
             let id = req.body.id as any;
             let data = req.body.data as any;
 
-            return res.send(this.dataProvider.update(
+            return res.json(this.dataProvider.update(
                 id,
                 data
             ));
@@ -81,7 +79,7 @@ export class SimpleHttpServer {
             let id = req.body.id as any;
             let data = req.body.data as any;
 
-            return res.send(this.dataProvider.remove(
+            return res.json(this.dataProvider.remove(
                 id,
                 data
             ));
