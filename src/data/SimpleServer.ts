@@ -24,10 +24,13 @@ export class SimpleServer {
         app.use(cors());
 
         app.use((req, res, next) => {
+            const path = req.path;
+            const method = req.method;
+            const params = JSON.stringify(req.params);
+            const query = JSON.stringify(req.query);
+            const body = JSON.stringify(req.body);
             console.debug(
-                `[SimpleServer] call, url=${req.url},method=${req.method},params=${JSON.stringify(
-                    req.params,
-                )},query=${JSON.stringify(req.query)}`,
+                `[SimpleServer] call, path=${path},method=${method},params=${params},query=${query},body=${body}`,
             );
 
             next();
