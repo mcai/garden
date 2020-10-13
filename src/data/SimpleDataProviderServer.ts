@@ -1,7 +1,7 @@
 export interface SimpleDataProviderServer {
     connect(): Promise<void>;
 
-    all<ItemT>(
+    all(
         orderings?: {
             key: string;
             descending: boolean;
@@ -9,9 +9,9 @@ export interface SimpleDataProviderServer {
         filter?: {
             [key: string]: any;
         },
-    ): Promise<ItemT[] | undefined>;
+    ): Promise<any[] | undefined>;
 
-    find<ItemT>(
+    find(
         pageSize: number,
         pageNum: number,
         orderings?: {
@@ -25,23 +25,23 @@ export interface SimpleDataProviderServer {
         | {
               count: number;
               pageCount: number;
-              itemsInCurrentPage: ItemT[];
+              itemsInCurrentPage: any[];
           }
         | undefined
     >;
 
-    one<RecordT>(filter?: { [key: string]: any }): Promise<RecordT | undefined>;
+    one(filter?: { [key: string]: any }): Promise<any | undefined>;
 
-    create<RecordT>(data: { [key: string]: any }): Promise<RecordT | undefined>;
+    create(data: { [key: string]: any }): Promise<any | undefined>;
 
-    update<RecordT>(
+    update(
         id: number,
         data: {
             [key: string]: any;
         },
-    ): Promise<RecordT | undefined>;
+    ): Promise<any | undefined>;
 
-    remove<RecordT>(
+    remove(
         id: number,
         data: {
             [key: string]: any;

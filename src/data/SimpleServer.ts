@@ -40,9 +40,9 @@ export class SimpleServer {
             controller.register(app).then(() => {});
         });
 
-        app.get("*", function (req, res) {
-            return res.status(404).send(`404 error: not found: ${req.url}`);
-        });
+        // app.get("*", function (req, res) {
+        //     return res.status(404).send(`404 error: not found: ${req.url}`);
+        // });
 
         app.listen(this.port, () => console.log(`Garden server listening on port ${this.port}!`));
     }

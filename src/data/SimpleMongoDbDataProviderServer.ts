@@ -25,20 +25,22 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         this.model = this.connection?.model(this.name, new Schema(this.schemaDefinition));
     }
 
-    private paging(
+    private async paging(
         query: any,
         pageSize: number,
         pageNum: number,
-    ): {
+    ): Promise<{
         itemsInCurrentPage: any;
         pageCount: number;
         count: number;
-    } {
-        const count = query.count;
+    }> {
+        const count = await this.model?.countDocuments();
 
         const pageCount = Math.ceil(count / pageSize);
 
-        const itemsInCurrentPage = query.skip(pageSize * pageNum).limit(pageSize);
+        query = query.skip(pageSize * pageNum).limit(pageSize);
+
+        const itemsInCurrentPage = await query;
 
         return {
             itemsInCurrentPage: itemsInCurrentPage,
@@ -47,7 +49,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         };
     }
 
-    all<ItemT>(
+    async all(
         orderings?: {
             key: string;
             descending: boolean;
@@ -55,7 +57,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         filter?: {
             [key: string]: any;
         },
-    ): Promise<ItemT[] | undefined> {
+    ): Promise<any[] | undefined> {
         let query = this.model?.find({
             ...filter,
         });
@@ -66,10 +68,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             });
         });
 
-        return query as any;
+        return await query;
     }
 
-    find<ItemT>(
+    find(
         pageSize: number,
         pageNum: number,
         orderings?: {
@@ -83,7 +85,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         | {
               count: number;
               pageCount: number;
-              itemsInCurrentPage: ItemT[];
+              itemsInCurrentPage: any[];
           }
         | undefined
     > {
@@ -97,48 +99,52 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             });
         });
 
-        const paging = this.paging(query, pageSize, pageNum);
-
-        return paging as any;
+        return this.paging(query, pageSize, pageNum);
     }
 
-    one<RecordT>(filter?: { [key: string]: any }): Promise<RecordT | undefined> {
-        return this.model?.findOne({
+    async one(filter?: { [key: string]: any }): Promise<any | undefined> {
+        const query = this.model?.findOne({
             ...filter,
-        }) as any;
+        });
+
+        return await query;
     }
 
-    create<RecordT>(data: { [key: string]: any }): Promise<RecordT | undefined> {
-        return this.model?.create({
+    async create(data: { [key: string]: any }): Promise<any | undefined> {
+        return await this.model?.create({
             ...data,
-        }) as any;
+        });
     }
 
-    update<RecordT>(
+    async update(
         id: number,
         data: {
             [key: string]: any;
         },
-    ): Promise<RecordT | undefined> {
-        return this.model?.updateOne(
+    ): Promise<any | undefined> {
+        const query = this.model?.updateOne(
             {
                 id: id,
             },
             {
                 ...data,
             },
-        ) as any;
+        );
+
+        return await query;
     }
 
-    remove<RecordT>(
+    async remove(
         id: number,
         data: {
             [key: string]: any;
         },
     ): Promise<void> {
-        return this.model?.deleteOne({
+        const query = this.model?.deleteOne({
             id: id,
             ...data,
-        }) as any;
+        });
+
+        return await query;
     }
 }
