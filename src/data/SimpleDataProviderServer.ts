@@ -35,14 +35,14 @@ export interface SimpleDataProviderServer {
     create(data: { [key: string]: any }): Promise<any | undefined>;
 
     update(
-        id: number,
+        id: any,
         data: {
             [key: string]: any;
         },
     ): Promise<any | undefined>;
 
     remove(
-        id: number,
+        id: any,
         data: {
             [key: string]: any;
         },

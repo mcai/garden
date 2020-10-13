@@ -40,10 +40,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
 
         query = query.skip(pageSize * pageNum).limit(pageSize);
 
-        const itemsInCurrentPage = await query;
+        const itemsInCurrentPage = JSON.parse(JSON.stringify(await query));
 
         return {
-            itemsInCurrentPage: itemsInCurrentPage,
+            itemsInCurrentPage: itemsInCurrentPage.map((item: any) => ({ ...item, id: item._id })),
             pageCount: pageCount,
             count: count,
         };
@@ -68,7 +68,9 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             });
         });
 
-        return await query;
+        const result = await query;
+
+        return result.map((item: any) => ({ ...item, id: item._id }));
     }
 
     find(
@@ -103,48 +105,73 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async one(filter?: { [key: string]: any }): Promise<any | undefined> {
+        const { id, ...otherParams } = filter ?? {};
+
         const query = this.model?.findOne({
-            ...filter,
+            ...otherParams,
+            _id: id,
         });
 
-        return await query;
+        const result = JSON.parse(JSON.stringify(await query));
+
+        return {
+            ...result,
+            id: result._id,
+        };
     }
 
     async create(data: { [key: string]: any }): Promise<any | undefined> {
-        return await this.model?.create({
+        const query = this.model?.create({
             ...data,
         });
+
+        const result = JSON.parse(JSON.stringify(await query));
+
+        return {
+            ...result,
+            id: result?._id,
+        };
     }
 
     async update(
-        id: number,
+        id: any,
         data: {
             [key: string]: any;
         },
     ): Promise<any | undefined> {
         const query = this.model?.updateOne(
             {
-                id: id,
+                _id: id,
             },
             {
                 ...data,
             },
         );
 
-        return await query;
+        const result = JSON.parse(JSON.stringify(await query));
+
+        return {
+            ...result,
+            id: result._id,
+        };
     }
 
     async remove(
-        id: number,
+        id: any,
         data: {
             [key: string]: any;
         },
     ): Promise<void> {
         const query = this.model?.deleteOne({
-            id: id,
+            _id: id,
             ...data,
         });
 
-        return await query;
+        const result = JSON.parse(JSON.stringify(await query));
+
+        return {
+            ...result,
+            id: result._id,
+        };
     }
 }

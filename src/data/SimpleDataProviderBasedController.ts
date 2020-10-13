@@ -48,13 +48,13 @@ export class SimpleDataProviderBasedController implements SimpleController {
 
         app.post(`/${this.resources}/update`, async (req, res) => {
             const { id, ...data } = req.body;
-            const result = await this.dataProvider.update(parseInt(id as any), data as any);
+            const result = await this.dataProvider.update(id as any, data as any);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/remove`, async (req, res) => {
             const { id, ...data } = req.body;
-            await this.dataProvider.remove(parseInt(id as any), data as any);
+            await this.dataProvider.remove(id as any, data as any);
             return res.json({});
         });
     }
