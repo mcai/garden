@@ -35,6 +35,28 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         this.model = this.connection?.model(this.name, new Schema(this.schemaDefinition));
     }
 
+    private paging(
+        query: any,
+        pageSize: number,
+        pageNum: number
+    ): {
+        itemsInCurrentPage: any,
+        pageCount: number,
+        count: number
+    } {
+        let count = query.count;
+
+        let pageCount = Math.ceil(count / pageSize);
+
+        let itemsInCurrentPage = query.skip(pageSize * pageNum).limit(pageSize);
+
+        return {
+            itemsInCurrentPage: itemsInCurrentPage,
+            pageCount: pageCount,
+            count: count
+        }
+    }
+
     all<ItemT>(
         ordering?: any,
         filter?: {
@@ -58,9 +80,13 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         pageCount: number,
         itemsInCurrentPage: ItemT[]
     } | undefined> {
-        return this.model?.find({ // TODO: paging
+        let query = this.model?.find({
             ...filter
-        }) as any;
+        });
+
+        let paging = this.paging(query, pageSize, pageNum);
+
+        return paging as any;
     }
 
     one<RecordT>(
