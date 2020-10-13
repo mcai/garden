@@ -1,8 +1,8 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
 import express from "express";
-import { SimpleHttpController } from "./SimpleHttpController";
+import { SimpleController } from "./SimpleController";
 
-export class SimpleDataProviderBasedHttpController implements SimpleHttpController {
+export class SimpleDataProviderBasedHttpController implements SimpleController {
     resource: string;
     dataProvider: SimpleDataProviderServer;
 

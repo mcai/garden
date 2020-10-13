@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { SimpleHttpController } from "./SimpleHttpController";
+import { SimpleController } from "./SimpleController";
 
-export class SimpleHttpServer {
+export class SimpleServer {
     port: number;
-    controllers: SimpleHttpController[];
+    controllers: SimpleController[];
 
-    constructor(port: number, controllers: SimpleHttpController[]) {
+    constructor(port: number, controllers: SimpleController[]) {
         this.port = port;
         this.controllers = controllers;
     }
@@ -23,7 +23,7 @@ export class SimpleHttpServer {
 
         app.use(cors());
 
-        this.controllers.forEach((controller: SimpleHttpController) => {
+        this.controllers.forEach((controller: SimpleController) => {
             controller.register(app);
         });
 

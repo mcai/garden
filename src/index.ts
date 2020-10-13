@@ -1,5 +1,5 @@
 import { SimpleMongoDbDataProviderServer } from "./data/SimpleMongoDbDataProviderServer";
-import { SimpleHttpServer } from "./data/SimpleHttpServer";
+import { SimpleServer } from "./data/SimpleServer";
 import { SimpleDataProviderBasedHttpController } from "./data/SimpleDataProviderBasedHttpController";
 import { SimpleResource } from "./data/SimpleResource";
 
@@ -15,7 +15,7 @@ export function listen(connectionString: string, port: number, resources: Simple
         return new SimpleDataProviderBasedHttpController(resource.resource, dataProvider);
     });
 
-    const httpServer = new SimpleHttpServer(port, controllers);
+    const httpServer = new SimpleServer(port, controllers);
 
     httpServer.listen();
 }

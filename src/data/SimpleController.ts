@@ -1,5 +1,5 @@
 import express from "express";
 
-export interface SimpleHttpController {
+export interface SimpleController {
     register(app: express.Express): void;
 }
