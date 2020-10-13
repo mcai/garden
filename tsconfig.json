@@ -5,8 +5,8 @@
       "moduleResolution": "node",
       "lib": ["es2017", "es7", "es6", "dom"],
       "declaration": true,
-      "rootDir": "./lib",
-      "outDir": "./dist",
+      "rootDir": "./src",
+      "outDir": "./build",
       "strict": true,
       "esModuleInterop": true,
       "emitDecoratorMetadata": true,
@@ -14,10 +14,10 @@
       "sourceMap": true
    },
    "include": [
-      "lib"
+      "src"
    ],
    "exclude": [
       "node_modules",
-      "dist"
+      "build"
    ]
 }
