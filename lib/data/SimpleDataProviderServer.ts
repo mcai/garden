@@ -3,7 +3,10 @@ export interface SimpleDataProviderServer {
     ): Promise<void>;
 
     all<ItemT>(
-        ordering?: any,
+        orderings?: {
+            key: string,
+            descending: boolean
+        }[],
         filter?: {
             [key: string]: any
         }
@@ -12,7 +15,10 @@ export interface SimpleDataProviderServer {
     find<ItemT>(
         pageSize: number,
         pageNum: number,
-        ordering?: any,
+        orderings?: {
+            key: string,
+            descending: boolean
+        }[],
         filter?: {
             [key: string]: any
         }

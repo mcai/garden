@@ -58,20 +58,34 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     all<ItemT>(
-        ordering?: any,
+        orderings?: {
+            key: string,
+            descending: boolean
+        }[],
         filter?: {
             [key: string]: any
         }
     ): Promise<ItemT[] | undefined> {
-        return this.model?.find({
+        let query = this.model?.find({
             ...filter
-        }) as any;
+        });
+
+        orderings?.forEach(ordering => {
+            query = query?.sort({
+                [ordering.key]: ordering.descending ? -1 : 1
+            })
+        });
+
+        return query as any;
     }
 
     find<ItemT>(
         pageSize: number,
         pageNum: number,
-        ordering?: any,
+        orderings?: {
+            key: string,
+            descending: boolean
+        }[],
         filter?: {
             [key: string]: any
         }
@@ -82,6 +96,12 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     } | undefined> {
         let query = this.model?.find({
             ...filter
+        });
+
+        orderings?.forEach(ordering => {
+            query = query?.sort({
+                [ordering.key]: ordering.descending ? -1 : 1
+            })
         });
 
         let paging = this.paging(query, pageSize, pageNum);
