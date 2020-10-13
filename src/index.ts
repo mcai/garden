@@ -1,22 +1,21 @@
 import { SimpleMongoDbDataProviderServer } from "./data/SimpleMongoDbDataProviderServer";
 import { SimpleHttpServer } from "./data/SimpleHttpServer";
 import { SimpleDataProviderBasedHttpController } from "./data/SimpleDataProviderBasedHttpController";
+import { SimpleResource } from "./data/SimpleResource";
 
-export function listen(
-    connectionString: string,
+export function listen(connectionString: string, port: number, resources: SimpleResource[]) {
+    const controllers = resources.map((resource: SimpleResource) => {
+        const dataProvider = new SimpleMongoDbDataProviderServer(
+            connectionString,
+            resource.databaseName,
+            name,
+            resource.schemaDefinition,
+        );
 
-    databaseName: string,
-    name: string,
-    schemaDefinition: any,
-    resource: string,
+        return new SimpleDataProviderBasedHttpController(resource.resource, dataProvider);
+    });
 
-    port: number,
-) {
-    const dataProvider = new SimpleMongoDbDataProviderServer(connectionString, databaseName, name, schemaDefinition);
-
-    const controller = new SimpleDataProviderBasedHttpController(resource, dataProvider);
-
-    const httpServer = new SimpleHttpServer(port, [controller]);
+    const httpServer = new SimpleHttpServer(port, controllers);
 
     httpServer.listen();
 }
