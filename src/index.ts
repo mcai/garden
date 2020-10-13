@@ -1,5 +1,5 @@
-import {SimpleMongoDbDataProviderServer} from "./data/SimpleMongoDbDataProviderServer";
-import {SimpleHttpServer} from "./data/SimpleHttpServer";
+import { SimpleMongoDbDataProviderServer } from "./data/SimpleMongoDbDataProviderServer";
+import { SimpleHttpServer } from "./data/SimpleHttpServer";
 
 export function listen(
     connectionString: string,
@@ -7,15 +7,10 @@ export function listen(
     name: string,
     schemaDefinition: any,
     resource: string,
-    port: number
+    port: number,
 ) {
-    let dataProvider = new SimpleMongoDbDataProviderServer(
-        connectionString,
-        databaseName,
-        name,
-        schemaDefinition
-    );
+    const dataProvider = new SimpleMongoDbDataProviderServer(connectionString, databaseName, name, schemaDefinition);
 
-    let httpServer = new SimpleHttpServer(dataProvider, resource, port);
+    const httpServer = new SimpleHttpServer(dataProvider, resource, port);
     httpServer.listen();
 }
