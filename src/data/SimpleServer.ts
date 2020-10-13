@@ -23,6 +23,16 @@ export class SimpleServer {
 
         app.use(cors());
 
+        app.use((req, res, next) => {
+            console.debug(
+                `[SimpleServer] call, url=${req.url},method=${req.method},params=${JSON.stringify(
+                    req.params,
+                )},query=${JSON.stringify(req.query)}`,
+            );
+
+            next();
+        });
+
         this.controllers.forEach((controller: SimpleController) => {
             controller.register(app).then(() => {});
         });
