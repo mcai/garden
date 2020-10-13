@@ -24,7 +24,7 @@ export class SimpleServer {
         app.use(cors());
 
         this.controllers.forEach((controller: SimpleController) => {
-            controller.register(app);
+            controller.register(app).then(() => {});
         });
 
         app.get("*", function (req, res) {
