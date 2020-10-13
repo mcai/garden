@@ -1,24 +1,23 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
 import { Connection, createConnection, Document, Model, Schema, SchemaDefinition } from "mongoose";
+import pluralize from "pluralize";
 
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
-    databaseName: string;
     name: string;
     schemaDefinition?: SchemaDefinition;
 
     private connection?: Connection;
     private model?: Model<Document, any>;
 
-    constructor(connectionString: string, databaseName: string, name: string, schemaDefinition: SchemaDefinition) {
+    constructor(connectionString: string, name: string, schemaDefinition: SchemaDefinition) {
         this.connectionString = connectionString;
-        this.databaseName = databaseName;
         this.name = name;
         this.schemaDefinition = schemaDefinition;
     }
 
     async connect(): Promise<void> {
-        this.connection = await createConnection(this.connectionString + "/" + this.databaseName, {
+        this.connection = await createConnection(this.connectionString + "/" + pluralize(this.name), {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

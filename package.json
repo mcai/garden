@@ -1,6 +1,6 @@
 {
    "name": "@itecgo/garden",
-   "version": "0.0.29",
+   "version": "0.0.30",
    "description": "garden library",
    "repository": {
       "type": "git",
@@ -23,12 +23,14 @@
    "dependencies": {
       "cors": "^2.8.5",
       "express": "^4.17.1",
-      "mongoose": "^5.10.9"
+      "mongoose": "^5.10.9",
+      "pluralize": "^8.0.0"
    },
    "devDependencies": {
       "@types/cors": "^2.8.8",
       "@types/mongoose": "^5.7.36",
       "@types/node": "^14.11.8",
+      "@types/pluralize": "0.0.29",
       "@typescript-eslint/eslint-plugin": "^4.4.1",
       "@typescript-eslint/parser": "^4.4.1",
       "eslint": "^7.11.0",
