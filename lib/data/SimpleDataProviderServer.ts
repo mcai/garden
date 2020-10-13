@@ -1,4 +1,7 @@
 export interface SimpleDataProviderServer {
+    connect(
+    ): Promise<void>;
+
     all<ItemT>(
         ordering?: any,
         filter?: {
