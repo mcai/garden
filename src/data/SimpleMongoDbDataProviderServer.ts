@@ -34,7 +34,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         pageCount: number;
         count: number;
     }> {
-        const count = await this.model?.countDocuments();
+        const count = await query.count();
 
         const pageCount = Math.ceil(count / pageSize);
 
