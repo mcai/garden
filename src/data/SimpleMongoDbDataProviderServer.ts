@@ -26,17 +26,37 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     private async paging(
-        query: any,
         pageSize: number,
         pageNum: number,
+        orderings?: {
+            key: string;
+            descending: boolean;
+        }[],
+        filter?: {
+            [key: string]: any;
+        },
     ): Promise<{
         itemsInCurrentPage: any;
         pageCount: number;
         count: number;
     }> {
-        const count = await query.count();
+        const countQuery = this.model?.find({
+            ...filter,
+        });
+
+        const count = JSON.parse(JSON.stringify(await countQuery.countDocuments()));
 
         const pageCount = Math.ceil(count / pageSize);
+
+        let query = this.model?.find({
+            ...filter,
+        });
+
+        orderings?.forEach((ordering) => {
+            query = query?.sort({
+                [ordering.key]: ordering.descending ? -1 : 1,
+            });
+        });
 
         query = query.skip(pageSize * pageNum).limit(pageSize);
 
@@ -91,17 +111,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
           }
         | undefined
     > {
-        let query = this.model?.find({
-            ...filter,
-        });
-
-        orderings?.forEach((ordering) => {
-            query = query?.sort({
-                [ordering.key]: ordering.descending ? -1 : 1,
-            });
-        });
-
-        return this.paging(query, pageSize, pageNum);
+        return this.paging(pageSize, pageNum, orderings, filter);
     }
 
     async one(filter?: { [key: string]: any }): Promise<any | undefined> {
