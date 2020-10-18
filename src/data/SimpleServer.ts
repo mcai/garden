@@ -14,7 +14,11 @@ export class SimpleServer {
     listen() {
         const app = express();
 
-        app.use(express.json());
+        app.use(
+            express.json({
+                limit: 102400000,
+            }),
+        );
         app.use(
             express.urlencoded({
                 extended: true,
