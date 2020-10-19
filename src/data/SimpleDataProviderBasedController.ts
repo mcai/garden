@@ -18,17 +18,17 @@ export class SimpleDataProviderBasedController implements SimpleController {
         await this.dataProvider.connect();
 
         app.get(`/${this.resources}/all`, async (req, res) => {
-            const { orderings, ...filter } = req.query;
-            const result = await this.dataProvider.all(orderings as any, filter as any);
+            const { ordering, ...filter } = req.query;
+            const result = await this.dataProvider.all(ordering as any, filter as any);
             return res.json(result);
         });
 
         app.get(`/${this.resources}/find`, async (req, res) => {
-            const { pageSize, pageNum, orderings, ...filter } = req.query;
+            const { pageSize, pageNum, ordering, ...filter } = req.query;
             const result = await this.dataProvider.find(
                 parseInt(pageSize as any),
                 parseInt(pageNum as any),
-                orderings as any,
+                ordering as any,
                 filter as any,
             );
             return res.json(result);

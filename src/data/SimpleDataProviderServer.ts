@@ -2,10 +2,10 @@ export interface SimpleDataProviderServer {
     connect(): Promise<void>;
 
     all(
-        orderings?: {
+        ordering?: {
             key: string;
             descending: boolean;
-        }[],
+        },
         filter?: {
             [key: string]: any;
         },
@@ -14,10 +14,10 @@ export interface SimpleDataProviderServer {
     find(
         pageSize: number,
         pageNum: number,
-        orderings?: {
+        ordering?: {
             key: string;
             descending: boolean;
-        }[],
+        },
         filter?: {
             [key: string]: any;
         },

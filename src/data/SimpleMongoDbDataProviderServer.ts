@@ -28,10 +28,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     private async paging(
         pageSize: number,
         pageNum: number,
-        orderings?: {
+        ordering?: {
             key: string;
             descending: boolean;
-        }[],
+        },
         filter?: {
             [key: string]: any;
         },
@@ -52,11 +52,11 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             ...filter,
         });
 
-        orderings?.forEach((ordering) => {
+        if (ordering != undefined) {
             query = query?.sort({
                 [ordering.key]: ordering.descending ? -1 : 1,
             });
-        });
+        }
 
         query = query.skip(pageSize * pageNum).limit(pageSize);
 
@@ -70,10 +70,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async all(
-        orderings?: {
+        ordering?: {
             key: string;
             descending: boolean;
-        }[],
+        },
         filter?: {
             [key: string]: any;
         },
@@ -82,24 +82,24 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             ...filter,
         });
 
-        orderings?.forEach((ordering) => {
+        if (ordering != undefined) {
             query = query?.sort({
                 [ordering.key]: ordering.descending ? -1 : 1,
             });
-        });
+        }
 
         const result = await query;
 
         return result.map((item: any) => ({ ...item, id: item._id }));
     }
 
-    find(
+    async find(
         pageSize: number,
         pageNum: number,
-        orderings?: {
+        ordering?: {
             key: string;
             descending: boolean;
-        }[],
+        },
         filter?: {
             [key: string]: any;
         },
@@ -111,7 +111,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
           }
         | undefined
     > {
-        return this.paging(pageSize, pageNum, orderings, filter);
+        return await this.paging(pageSize, pageNum, ordering, filter);
     }
 
     async one(filter?: { [key: string]: any }): Promise<any | undefined> {
