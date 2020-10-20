@@ -1,16 +1,6 @@
 export interface SimpleDataProviderServer {
     connect(): Promise<void>;
 
-    all(
-        ordering?: {
-            key: string;
-            descending: boolean;
-        },
-        filter?: {
-            [key: string]: any;
-        },
-    ): Promise<any[] | undefined>;
-
     find(
         pageSize: number,
         pageNum: number,
@@ -29,6 +19,16 @@ export interface SimpleDataProviderServer {
           }
         | undefined
     >;
+
+    all(
+        ordering?: {
+            key: string;
+            descending: boolean;
+        },
+        filter?: {
+            [key: string]: any;
+        },
+    ): Promise<any[] | undefined>;
 
     one(filter?: { [key: string]: any }): Promise<any | undefined>;
 

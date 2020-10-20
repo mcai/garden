@@ -69,6 +69,27 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         };
     }
 
+    async find(
+        pageSize: number,
+        pageNum: number,
+        ordering?: {
+            key: string;
+            descending: boolean;
+        },
+        filter?: {
+            [key: string]: any;
+        },
+    ): Promise<
+        | {
+              count: number;
+              pageCount: number;
+              itemsInCurrentPage: any[];
+          }
+        | undefined
+    > {
+        return await this.paging(pageSize, pageNum, ordering, filter);
+    }
+
     async all(
         ordering?: {
             key: string;
@@ -91,27 +112,6 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         const result = await query;
 
         return result.map((item: any) => ({ ...item, id: item._id }));
-    }
-
-    async find(
-        pageSize: number,
-        pageNum: number,
-        ordering?: {
-            key: string;
-            descending: boolean;
-        },
-        filter?: {
-            [key: string]: any;
-        },
-    ): Promise<
-        | {
-              count: number;
-              pageCount: number;
-              itemsInCurrentPage: any[];
-          }
-        | undefined
-    > {
-        return await this.paging(pageSize, pageNum, ordering, filter);
     }
 
     async one(filter?: { [key: string]: any }): Promise<any | undefined> {
