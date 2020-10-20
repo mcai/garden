@@ -5,11 +5,7 @@ import { SimpleResource } from "./data/SimpleResource";
 
 export function listen(connectionString: string, port: number, resources: SimpleResource[]) {
     const controllers = resources.map((resource: SimpleResource) => {
-        const dataProvider = new SimpleMongoDbDataProviderServer(
-            connectionString,
-            resource.name,
-            resource.schemaDefinition,
-        );
+        const dataProvider = new SimpleMongoDbDataProviderServer(connectionString, resource.name, resource.schema);
 
         return new SimpleDataProviderBasedController(resource.name, dataProvider);
     });

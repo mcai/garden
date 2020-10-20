@@ -1,19 +1,19 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
-import { Connection, createConnection, Document, Model, Schema, SchemaDefinition } from "mongoose";
+import { Connection, createConnection, Document, Model, Schema } from "mongoose";
 import pluralize from "pluralize";
 
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
     name: string;
-    schemaDefinition?: SchemaDefinition;
+    schema: Schema;
 
     private connection?: Connection;
     private model?: Model<Document, any>;
 
-    constructor(connectionString: string, name: string, schemaDefinition: SchemaDefinition) {
+    constructor(connectionString: string, name: string, schema: Schema) {
         this.connectionString = connectionString;
         this.name = name;
-        this.schemaDefinition = schemaDefinition;
+        this.schema = schema;
     }
 
     async connect(): Promise<void> {
@@ -22,7 +22,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             useUnifiedTopology: true,
         });
 
-        this.model = this.connection?.model(this.name, new Schema(this.schemaDefinition));
+        this.model = this.connection?.model(this.name, this.schema);
     }
 
     private async paging(
