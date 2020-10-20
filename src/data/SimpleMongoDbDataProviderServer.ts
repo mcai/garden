@@ -109,7 +109,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             });
         }
 
-        const result = await query;
+        const result = JSON.parse(JSON.stringify(await query));
 
         return result.map((item: any) => ({ ...item, id: item._id }));
     }
