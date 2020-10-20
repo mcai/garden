@@ -30,6 +30,8 @@ export interface SimpleDataProviderServer {
         },
     ): Promise<any[] | undefined>;
 
+    count(filter?: { [key: string]: any }): Promise<number | undefined>;
+
     one(filter?: { [key: string]: any }): Promise<any | undefined>;
 
     create(data: { [key: string]: any }): Promise<any | undefined>;

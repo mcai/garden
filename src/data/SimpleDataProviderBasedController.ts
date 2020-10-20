@@ -17,12 +17,6 @@ export class SimpleDataProviderBasedController implements SimpleController {
     async register(app: express.Express): Promise<void> {
         await this.dataProvider.connect();
 
-        app.get(`/${this.resources}/all`, async (req, res) => {
-            const { ordering, ...filter } = req.query;
-            const result = await this.dataProvider.all(ordering as any, filter as any);
-            return res.json(result);
-        });
-
         app.get(`/${this.resources}/find`, async (req, res) => {
             const { pageSize, pageNum, ordering, ...filter } = req.query;
             const result = await this.dataProvider.find(
@@ -31,6 +25,18 @@ export class SimpleDataProviderBasedController implements SimpleController {
                 ordering as any,
                 filter as any,
             );
+            return res.json(result);
+        });
+
+        app.get(`/${this.resources}/all`, async (req, res) => {
+            const { ordering, ...filter } = req.query;
+            const result = await this.dataProvider.all(ordering as any, filter as any);
+            return res.json(result);
+        });
+
+        app.get(`/${this.resources}/count`, async (req, res) => {
+            const { ...filter } = req.query;
+            const result = await this.dataProvider.count(filter as any);
             return res.json(result);
         });
 

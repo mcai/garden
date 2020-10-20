@@ -114,6 +114,14 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         return result.map((item: any) => ({ ...item, id: item._id }));
     }
 
+    async count(filter?: { [key: string]: any }): Promise<number | undefined> {
+        const query = this.model?.find({
+            ...filter,
+        });
+
+        return JSON.parse(JSON.stringify(await query.countDocuments()));
+    }
+
     async one(filter?: { [key: string]: any }): Promise<any | undefined> {
         const { id, ...otherParams } = filter ?? {};
 
