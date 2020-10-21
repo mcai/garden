@@ -18,49 +18,49 @@ export class SimpleDataProviderBasedController implements SimpleController {
         await this.dataProvider.connect();
 
         app.get(`/${this.resources}/find`, async (req, res) => {
-            const { pageSize, pageNum, ordering, ...filter } = req.query;
+            const { pageSize, pageNum, ordering, filter } = req.query;
             const result = await this.dataProvider.find(
                 parseInt(pageSize as any),
                 parseInt(pageNum as any),
                 ordering as any,
-                filter as any,
+                filter,
             );
             return res.json(result);
         });
 
         app.get(`/${this.resources}/all`, async (req, res) => {
-            const { ordering, ...filter } = req.query;
-            const result = await this.dataProvider.all(ordering as any, filter as any);
+            const { ordering, filter } = req.query;
+            const result = await this.dataProvider.all(ordering as any, filter);
             return res.json(result);
         });
 
         app.get(`/${this.resources}/count`, async (req, res) => {
-            const { ...filter } = req.query;
-            const result = await this.dataProvider.count(filter as any);
+            const { filter } = req.query;
+            const result = await this.dataProvider.count(filter);
             return res.json(result);
         });
 
         app.get(`/${this.resources}/one`, async (req, res) => {
-            const { ...filter } = req.query;
-            const result = await this.dataProvider.one(filter as any);
+            const { filter } = req.query;
+            const result = await this.dataProvider.one(filter);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/create`, async (req, res) => {
-            const { ...data } = req.body;
+            const { data } = req.body;
             const result = await this.dataProvider.create(data);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/update`, async (req, res) => {
-            const { id, ...data } = req.body;
-            const result = await this.dataProvider.update(id as any, data as any);
+            const { filter, data } = req.body;
+            const result = await this.dataProvider.update(filter, data);
             return res.json(result);
         });
 
         app.post(`/${this.resources}/remove`, async (req, res) => {
-            const { id, ...data } = req.body;
-            await this.dataProvider.remove(id as any, data as any);
+            const { filter } = req.body;
+            await this.dataProvider.remove(filter);
             return res.json({});
         });
     }
