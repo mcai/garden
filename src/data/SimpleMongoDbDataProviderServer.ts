@@ -120,7 +120,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         return JSON.parse(JSON.stringify(await query));
     }
 
-    async remove(filter: any): Promise<void> {
+    async remove(filter?: any): Promise<void> {
         const query = this.model?.deleteOne(filter);
         return JSON.parse(JSON.stringify(await query));
     }

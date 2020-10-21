@@ -34,5 +34,5 @@ export interface SimpleDataProviderServer {
 
     update(filter?: any, data?: any): Promise<any | undefined>;
 
-    remove(filter: any): Promise<void>;
+    remove(filter?: any): Promise<void>;
 }
