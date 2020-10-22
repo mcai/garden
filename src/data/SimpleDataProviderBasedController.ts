@@ -45,7 +45,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
                 resource,
                 {
                     key: String((ordering as any).key),
-                    descending: Boolean((ordering as any).descending),
+                    descending: (ordering as any).descending == "true",
                 },
                 filter,
             );
