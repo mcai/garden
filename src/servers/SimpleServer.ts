@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { SimpleController } from "./SimpleController";
+import { SimpleController } from "../controllers/SimpleController";
 
 export class SimpleServer {
     port: number;

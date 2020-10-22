@@ -1,4 +1,4 @@
-import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
+import { SimpleDataProviderServer } from "../data/SimpleDataProviderServer";
 import express from "express";
 import { SimpleController } from "./SimpleController";
 import { singular } from "pluralize";
