@@ -41,7 +41,7 @@ export interface SimpleDataProviderServer {
     getMany(
         filters: any[],
     ): Promise<{
-        data: any;
+        data: any[];
     }>;
 
     create(
@@ -52,7 +52,7 @@ export interface SimpleDataProviderServer {
 
     update(
         filter: any,
-        data?: any,
+        data: any,
     ): Promise<{
         data: any;
     }>;

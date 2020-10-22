@@ -118,7 +118,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         };
     }
 
-    async getMany(filters: any[]): Promise<{ data: any }> {
+    async getMany(filters: any[]): Promise<{ data: any[] }> {
         const query = filters.map((filter) => this.model?.findOne(filter));
 
         return {
