@@ -28,11 +28,18 @@ export interface SimpleDataProviderServer {
         data: any[];
     }>;
 
-    count(
+    countOne(
         resource: string,
         filter: any,
     ): Promise<{
         data: number;
+    }>;
+
+    countMany(
+        resource: string,
+        filters: any[],
+    ): Promise<{
+        data: number[];
     }>;
 
     getOne(

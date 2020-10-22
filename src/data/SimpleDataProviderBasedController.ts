@@ -52,11 +52,19 @@ export class SimpleDataProviderBasedController implements SimpleController {
             return res.json(result);
         });
 
-        app.get(`/:resources/count`, async (req, res) => {
+        app.get(`/:resources/countOne`, async (req, res) => {
             const resource = SimpleDataProviderBasedController.getResource(req);
 
             const { filter } = req.query;
-            const result = await this.dataProvider.count(resource, filter);
+            const result = await this.dataProvider.countOne(resource, filter);
+            return res.json(result);
+        });
+
+        app.get(`/:resources/countMany`, async (req, res) => {
+            const resource = SimpleDataProviderBasedController.getResource(req);
+
+            const { filters } = req.query;
+            const result = await this.dataProvider.countMany(resource, filters as any);
             return res.json(result);
         });
 

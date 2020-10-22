@@ -86,7 +86,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         };
     }
 
-    async count(
+    async countOne(
         resource: string,
         filter: any,
     ): Promise<{
@@ -94,9 +94,24 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }> {
         const model = this.getModel(resource);
 
-        const query = model?.find(filter);
+        const query = model?.find(filter)?.countDocuments();
         return {
-            data: JSON.parse(JSON.stringify(await query?.countDocuments())),
+            data: JSON.parse(JSON.stringify(await query)),
+        };
+    }
+
+    async countMany(
+        resource: string,
+        filters: any[],
+    ): Promise<{
+        data: number[];
+    }> {
+        const model = this.getModel(resource);
+
+        const query = filters.map((filter) => model?.find(filter)?.countDocuments());
+
+        return {
+            data: (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x))),
         };
     }
 
