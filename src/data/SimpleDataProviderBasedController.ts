@@ -28,7 +28,10 @@ export class SimpleDataProviderBasedController implements SimpleController {
                     pageSize: Number((paging as any).pageSize),
                     pageNum: Number((paging as any).pageNum),
                 },
-                ordering as any,
+                {
+                    key: String((ordering as any).key),
+                    descending: Boolean((ordering as any).descending),
+                },
                 filter,
             );
             return res.json(result);
@@ -38,7 +41,14 @@ export class SimpleDataProviderBasedController implements SimpleController {
             const resource = SimpleDataProviderBasedController.getResource(req);
 
             const { ordering, filter } = req.query;
-            const result = await this.dataProvider.getAll(resource, ordering as any, filter);
+            const result = await this.dataProvider.getAll(
+                resource,
+                {
+                    key: String((ordering as any).key),
+                    descending: Boolean((ordering as any).descending),
+                },
+                filter,
+            );
             return res.json(result);
         });
 
