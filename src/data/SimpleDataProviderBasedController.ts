@@ -19,7 +19,14 @@ export class SimpleDataProviderBasedController implements SimpleController {
 
         app.get(`/${this.resources}/getList`, async (req, res) => {
             const { paging, ordering, filter } = req.query;
-            const result = await this.dataProvider.getList(paging as any, ordering as any, filter);
+            const result = await this.dataProvider.getList(
+                {
+                    pageSize: Number((paging as any).pageSize),
+                    pageNum: Number((paging as any).pageNum),
+                },
+                ordering as any,
+                filter,
+            );
             return res.json(result);
         });
 
