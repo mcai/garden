@@ -1,5 +1,5 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
-import { Connection, createConnection } from "mongoose";
+import { Connection, createConnection, Schema } from "mongoose";
 
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
@@ -14,6 +14,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
+    }
+
+    private getModel(resource: string) {
+        return this.connection?.model(resource, new Schema({}, { strict: false }));
     }
 
     async getList(
@@ -31,7 +35,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         data: any[];
         total: number;
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const countQuery = model?.find(filter);
 
@@ -63,7 +67,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any[];
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         let query = model?.find(filter);
 
@@ -82,7 +86,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: number;
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = model?.find(filter);
         return {
@@ -96,7 +100,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = model?.findOne(filter);
         return {
@@ -105,7 +109,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async getMany(resource: string, filters: any[]): Promise<{ data: any[] }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = filters.map((filter) => model?.findOne(filter));
 
@@ -120,7 +124,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = model?.create(data);
         return {
@@ -135,7 +139,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = model?.updateOne(filter, data);
         return {
@@ -144,7 +148,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async delete(resource: string, filter: any): Promise<void> {
-        const model = this.connection?.model(resource);
+        const model = this.getModel(resource);
 
         const query = model?.deleteOne(filter);
         return JSON.parse(JSON.stringify(await query));
