@@ -43,11 +43,9 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
 
         let query = this.model?.find(filter);
 
-        if (ordering != undefined) {
-            query = query?.sort({
-                [ordering.key]: ordering.descending ? -1 : 1,
-            });
-        }
+        query = query?.sort({
+            [ordering.key]: ordering.descending ? -1 : 1,
+        });
 
         query = query.skip(pageSize * pageNum).limit(pageSize);
 
