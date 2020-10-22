@@ -10,10 +10,10 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     private connection?: Connection;
     private model?: Model<Document, any>;
 
-    constructor(connectionString: string, name: string, schema: Schema) {
+    constructor(connectionString: string, name: string) {
         this.connectionString = connectionString;
         this.name = name;
-        this.schema = schema;
+        this.schema = new Schema({ any: {} });
     }
 
     async connect(): Promise<void> {
