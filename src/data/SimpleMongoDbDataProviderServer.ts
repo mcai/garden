@@ -1,63 +1,23 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
-import { Connection, createConnection, Document, Model, Schema } from "mongoose";
-import pluralize from "pluralize";
+import { Connection, createConnection } from "mongoose";
 
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
-    name: string;
-    schema: Schema;
-
     private connection?: Connection;
-    private model?: Model<Document, any>;
 
-    constructor(connectionString: string, name: string) {
+    constructor(connectionString: string) {
         this.connectionString = connectionString;
-        this.name = name;
-        this.schema = new Schema({ any: {} });
     }
 
     async connect(): Promise<void> {
-        this.connection = await createConnection(this.connectionString + "/" + pluralize(this.name), {
+        this.connection = await createConnection(this.connectionString, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-
-        this.model = this.connection?.model(this.name, this.schema);
-    }
-
-    private async paging(
-        pageSize: number,
-        pageNum: number,
-        ordering: {
-            key: string;
-            descending: boolean;
-        },
-        filter: any,
-    ): Promise<{
-        data: any[];
-        total: number;
-    }> {
-        const countQuery = this.model?.find(filter);
-
-        const total = JSON.parse(JSON.stringify(await countQuery.countDocuments()));
-
-        let query = this.model?.find(filter);
-
-        query = query?.sort({
-            [ordering.key]: ordering.descending ? -1 : 1,
-        });
-
-        query = query.skip(pageSize * pageNum).limit(pageSize);
-
-        const data = JSON.parse(JSON.stringify(await query));
-
-        return {
-            data: data,
-            total: total,
-        };
     }
 
     async getList(
+        resource: string,
         paging: {
             pageSize: number;
             pageNum: number;
@@ -71,10 +31,30 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
         data: any[];
         total: number;
     }> {
-        return await this.paging(paging.pageSize, paging.pageNum, ordering, filter);
+        const model = this.connection?.model(resource);
+
+        const countQuery = model?.find(filter);
+
+        const total = JSON.parse(JSON.stringify(await countQuery?.countDocuments()));
+
+        let query = model?.find(filter);
+
+        query = query?.sort({
+            [ordering.key]: ordering.descending ? -1 : 1,
+        });
+
+        query = query?.skip(paging.pageSize * paging.pageNum).limit(paging.pageSize);
+
+        const data = JSON.parse(JSON.stringify(await query));
+
+        return {
+            data: data,
+            total: total,
+        };
     }
 
     async getAll(
+        resource: string,
         ordering: {
             key: string;
             descending: boolean;
@@ -83,7 +63,9 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any[];
     }> {
-        let query = this.model?.find(filter);
+        const model = this.connection?.model(resource);
+
+        let query = model?.find(filter);
 
         query = query?.sort({
             [ordering.key]: ordering.descending ? -1 : 1,
@@ -95,29 +77,37 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async count(
+        resource: string,
         filter: any,
     ): Promise<{
         data: number;
     }> {
-        const query = this.model?.find(filter);
+        const model = this.connection?.model(resource);
+
+        const query = model?.find(filter);
         return {
-            data: JSON.parse(JSON.stringify(await query.countDocuments())),
+            data: JSON.parse(JSON.stringify(await query?.countDocuments())),
         };
     }
 
     async getOne(
+        resource: string,
         filter: any,
     ): Promise<{
         data: any;
     }> {
-        const query = this.model?.findOne(filter);
+        const model = this.connection?.model(resource);
+
+        const query = model?.findOne(filter);
         return {
             data: JSON.parse(JSON.stringify(await query)),
         };
     }
 
-    async getMany(filters: any[]): Promise<{ data: any[] }> {
-        const query = filters.map((filter) => this.model?.findOne(filter));
+    async getMany(resource: string, filters: any[]): Promise<{ data: any[] }> {
+        const model = this.connection?.model(resource);
+
+        const query = filters.map((filter) => model?.findOne(filter));
 
         return {
             data: (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x))),
@@ -125,30 +115,38 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     async create(
+        resource: string,
         data: any,
     ): Promise<{
         data: any;
     }> {
-        const query = this.model?.create(data);
+        const model = this.connection?.model(resource);
+
+        const query = model?.create(data);
         return {
             data: JSON.parse(JSON.stringify(await query)),
         };
     }
 
     async update(
+        resource: string,
         filter: any,
         data: any,
     ): Promise<{
         data: any;
     }> {
-        const query = this.model?.updateOne(filter, data);
+        const model = this.connection?.model(resource);
+
+        const query = model?.updateOne(filter, data);
         return {
             data: JSON.parse(JSON.stringify(await query)),
         };
     }
 
-    async delete(filter: any): Promise<void> {
-        const query = this.model?.deleteOne(filter);
+    async delete(resource: string, filter: any): Promise<void> {
+        const model = this.connection?.model(resource);
+
+        const query = model?.deleteOne(filter);
         return JSON.parse(JSON.stringify(await query));
     }
 }

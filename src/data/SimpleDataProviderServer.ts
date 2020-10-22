@@ -2,6 +2,7 @@ export interface SimpleDataProviderServer {
     connect(): Promise<void>;
 
     getList(
+        resource: string,
         paging: {
             pageSize: number;
             pageNum: number;
@@ -17,6 +18,7 @@ export interface SimpleDataProviderServer {
     }>;
 
     getAll(
+        resource: string,
         ordering: {
             key: string;
             descending: boolean;
@@ -27,35 +29,40 @@ export interface SimpleDataProviderServer {
     }>;
 
     count(
+        resource: string,
         filter: any,
     ): Promise<{
         data: number;
     }>;
 
     getOne(
+        resource: string,
         filter: any,
     ): Promise<{
         data: any;
     }>;
 
     getMany(
+        resource: string,
         filters: any[],
     ): Promise<{
         data: any[];
     }>;
 
     create(
+        resource: string,
         data: any,
     ): Promise<{
         data: any;
     }>;
 
     update(
+        resource: string,
         filter: any,
         data: any,
     ): Promise<{
         data: any;
     }>;
 
-    delete(filter: any): Promise<void>;
+    delete(resource: string, filter: any): Promise<void>;
 }
