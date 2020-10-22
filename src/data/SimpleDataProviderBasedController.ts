@@ -17,20 +17,15 @@ export class SimpleDataProviderBasedController implements SimpleController {
     async register(app: express.Express): Promise<void> {
         await this.dataProvider.connect();
 
-        app.get(`/${this.resources}/find`, async (req, res) => {
-            const { pageSize, pageNum, ordering, filter } = req.query;
-            const result = await this.dataProvider.find(
-                parseInt(pageSize as any),
-                parseInt(pageNum as any),
-                ordering as any,
-                filter,
-            );
+        app.get(`/${this.resources}/getList`, async (req, res) => {
+            const { paging, ordering, filter } = req.query;
+            const result = await this.dataProvider.getList(paging as any, ordering as any, filter);
             return res.json(result);
         });
 
-        app.get(`/${this.resources}/all`, async (req, res) => {
+        app.get(`/${this.resources}/getAll`, async (req, res) => {
             const { ordering, filter } = req.query;
-            const result = await this.dataProvider.all(ordering as any, filter);
+            const result = await this.dataProvider.getAll(ordering as any, filter);
             return res.json(result);
         });
 
@@ -40,9 +35,15 @@ export class SimpleDataProviderBasedController implements SimpleController {
             return res.json(result);
         });
 
-        app.get(`/${this.resources}/one`, async (req, res) => {
+        app.get(`/${this.resources}/getOne`, async (req, res) => {
             const { filter } = req.query;
-            const result = await this.dataProvider.one(filter);
+            const result = await this.dataProvider.getOne(filter);
+            return res.json(result);
+        });
+
+        app.get(`/${this.resources}/getMany`, async (req, res) => {
+            const { filters } = req.query;
+            const result = await this.dataProvider.getMany(filters as any);
             return res.json(result);
         });
 
@@ -58,9 +59,9 @@ export class SimpleDataProviderBasedController implements SimpleController {
             return res.json(result);
         });
 
-        app.post(`/${this.resources}/remove`, async (req, res) => {
+        app.post(`/${this.resources}/delete`, async (req, res) => {
             const { filter } = req.body;
-            await this.dataProvider.remove(filter);
+            await this.dataProvider.delete(filter);
             return res.json({});
         });
     }

@@ -1,38 +1,61 @@
 export interface SimpleDataProviderServer {
     connect(): Promise<void>;
 
-    find(
-        pageSize: number,
-        pageNum: number,
-        ordering?: {
+    getList(
+        paging: {
+            pageSize: number;
+            pageNum: number;
+        },
+        ordering: {
             key: string;
             descending: boolean;
         },
-        filter?: any,
-    ): Promise<
-        | {
-              count: number;
-              pageCount: number;
-              itemsInCurrentPage: any[];
-          }
-        | undefined
-    >;
+        filter: any,
+    ): Promise<{
+        data: any[];
+        total: number;
+    }>;
 
-    all(
-        ordering?: {
+    getAll(
+        ordering: {
             key: string;
             descending: boolean;
         },
-        filter?: any,
-    ): Promise<any[] | undefined>;
+        filter: any,
+    ): Promise<{
+        data: any[];
+    }>;
 
-    count(filter?: any): Promise<number | undefined>;
+    count(
+        filter: any,
+    ): Promise<{
+        data: number;
+    }>;
 
-    one(filter?: any): Promise<any | undefined>;
+    getOne(
+        filter: any,
+    ): Promise<{
+        data: any;
+    }>;
 
-    create(data?: any): Promise<any | undefined>;
+    getMany(
+        filters: any[],
+    ): Promise<{
+        data: any;
+    }>;
 
-    update(filter?: any, data?: any): Promise<any | undefined>;
+    create(
+        data: any,
+    ): Promise<{
+        data: any;
+    }>;
 
-    remove(filter?: any): Promise<void>;
+    update(
+        filter: any,
+        data?: any,
+    ): Promise<{
+        data: any;
+    }>;
+
+    delete(filter: any): Promise<void>;
 }

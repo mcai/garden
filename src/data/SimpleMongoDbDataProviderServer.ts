@@ -28,21 +28,18 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     private async paging(
         pageSize: number,
         pageNum: number,
-        ordering?: {
+        ordering: {
             key: string;
             descending: boolean;
         },
-        filter?: any,
+        filter: any,
     ): Promise<{
-        itemsInCurrentPage: any;
-        pageCount: number;
-        count: number;
+        data: any[];
+        total: number;
     }> {
         const countQuery = this.model?.find(filter);
 
-        const count = JSON.parse(JSON.stringify(await countQuery.countDocuments()));
-
-        const pageCount = Math.ceil(count / pageSize);
+        const total = JSON.parse(JSON.stringify(await countQuery.countDocuments()));
 
         let query = this.model?.find(filter);
 
@@ -54,73 +51,105 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
 
         query = query.skip(pageSize * pageNum).limit(pageSize);
 
-        const itemsInCurrentPage = JSON.parse(JSON.stringify(await query));
+        const data = JSON.parse(JSON.stringify(await query));
 
         return {
-            itemsInCurrentPage: itemsInCurrentPage,
-            pageCount: pageCount,
-            count: count,
+            data: data,
+            total: total,
         };
     }
 
-    async find(
-        pageSize: number,
-        pageNum: number,
-        ordering?: {
+    async getList(
+        paging: {
+            pageSize: number;
+            pageNum: number;
+        },
+        ordering: {
             key: string;
             descending: boolean;
         },
-        filter?: any,
-    ): Promise<
-        | {
-              count: number;
-              pageCount: number;
-              itemsInCurrentPage: any[];
-          }
-        | undefined
-    > {
-        return await this.paging(pageSize, pageNum, ordering, filter);
+        filter: any,
+    ): Promise<{
+        data: any[];
+        total: number;
+    }> {
+        return await this.paging(paging.pageSize, paging.pageNum, ordering, filter);
     }
 
-    async all(
-        ordering?: {
+    async getAll(
+        ordering: {
             key: string;
             descending: boolean;
         },
-        filter?: any,
-    ): Promise<any[] | undefined> {
+        filter: any,
+    ): Promise<{
+        data: any[];
+    }> {
         let query = this.model?.find(filter);
 
-        if (ordering != undefined) {
-            query = query?.sort({
-                [ordering.key]: ordering.descending ? -1 : 1,
-            });
-        }
+        query = query?.sort({
+            [ordering.key]: ordering.descending ? -1 : 1,
+        });
 
-        return JSON.parse(JSON.stringify(await query));
+        return {
+            data: JSON.parse(JSON.stringify(await query)),
+        };
     }
 
-    async count(filter?: any): Promise<number | undefined> {
+    async count(
+        filter: any,
+    ): Promise<{
+        data: number;
+    }> {
         const query = this.model?.find(filter);
-        return JSON.parse(JSON.stringify(await query.countDocuments()));
+        return {
+            data: JSON.parse(JSON.stringify(await query.countDocuments())),
+        };
     }
 
-    async one(filter?: any): Promise<any | undefined> {
+    async getOne(
+        filter: any,
+    ): Promise<{
+        data: any;
+    }> {
         const query = this.model?.findOne(filter);
-        return JSON.parse(JSON.stringify(await query));
+        return {
+            data: JSON.parse(JSON.stringify(await query)),
+        };
     }
 
-    async create(data?: any): Promise<any | undefined> {
+    async getMany(filters: any[]): Promise<{ data: any }> {
+        const query = filters.map((filter) => this.model?.findOne(filter));
+
+        return {
+            data: (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x))),
+        };
+    }
+
+    async create(
+        data: any,
+    ): Promise<{
+        data: any;
+    }> {
         const query = this.model?.create(data);
-        return JSON.parse(JSON.stringify(await query));
+        return {
+            data: JSON.parse(JSON.stringify(await query)),
+        };
     }
 
-    async update(filter?: any, data?: any): Promise<any | undefined> {
+    async update(
+        filter: any,
+        data: any,
+    ): Promise<{
+        data: any;
+    }> {
         const query = this.model?.updateOne(filter, data);
-        return JSON.parse(JSON.stringify(await query));
+        return {
+            data: JSON.parse(JSON.stringify(await query)),
+        };
     }
 
-    async remove(filter?: any): Promise<void> {
+    async delete(filter: any): Promise<void> {
         const query = this.model?.deleteOne(filter);
         return JSON.parse(JSON.stringify(await query));
     }
