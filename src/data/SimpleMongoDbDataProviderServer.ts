@@ -4,9 +4,11 @@ import { Connection, createConnection, Schema } from "mongoose";
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
     private connection?: Connection;
+    private models: { [resource: string]: any };
 
     constructor(connectionString: string) {
         this.connectionString = connectionString;
+        this.models = {};
     }
 
     async connect(): Promise<void> {
@@ -17,7 +19,11 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     }
 
     private getModel(resource: string) {
-        return this.connection?.model(resource, new Schema({}, { strict: false }));
+        if (!(resource in this.models)) {
+            this.models[resource] = this.connection?.model(resource, new Schema({}, { strict: false }));
+        }
+
+        return this.models[resource];
     }
 
     async getList(
