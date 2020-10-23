@@ -64,7 +64,14 @@ export class SimpleDataProviderBasedController implements SimpleController {
             const resource = SimpleDataProviderBasedController.getResource(req);
 
             const { filters } = req.query;
-            const result = await this.dataProvider.countMany(resource, filters as any);
+
+            const keys = [...((filters as any)[Object.keys(filters as any)?.[0] ?? ""] as any[]).keys()];
+
+            const filters1 = keys.map((index: number) =>
+                Object.entries(filters as any).map(([key, value]) => ({ [key]: (value as any)[index] })),
+            );
+
+            const result = await this.dataProvider.countMany(resource, filters1);
             return res.json(result);
         });
 
