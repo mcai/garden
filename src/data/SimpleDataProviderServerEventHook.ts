@@ -1,5 +1,7 @@
-export interface SimpleDataProviderServerEventHook {
-    onCreate: (resource: string, data: any) => void;
+import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
 
-    onUpdate: (resource: string, filter: any, data: any) => void;
+export interface SimpleDataProviderServerEventHook {
+    onCreate: (dataProviderServer: SimpleDataProviderServer, resource: string, data: any) => void;
+
+    onUpdate: (dataProviderServer: SimpleDataProviderServer, resource: string, filter: any, data: any) => void;
 }

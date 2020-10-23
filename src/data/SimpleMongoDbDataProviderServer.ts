@@ -150,7 +150,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
-        this.hooks?.forEach((hook) => hook.onCreate(resource, data));
+        this.hooks?.forEach((hook) => hook.onCreate(this, resource, data));
 
         const model = this.getModel(resource);
 
@@ -167,7 +167,7 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
-        this.hooks?.forEach((hook) => hook.onUpdate(resource, filter, data));
+        this.hooks?.forEach((hook) => hook.onUpdate(this, resource, filter, data));
 
         const model = this.getModel(resource);
 
