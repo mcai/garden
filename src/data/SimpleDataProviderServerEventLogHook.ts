@@ -6,6 +6,7 @@ export class SimpleDataProviderServerEventLogHook implements SimpleDataProviderS
         if (!resource.endsWith(".eventLog")) {
             await dataProviderServer.create(resource + ".eventLog", {
                 type: "create",
+                date: new Date(Date.now()).toISOString(),
                 resource: resource,
                 data: data,
             });
@@ -21,6 +22,7 @@ export class SimpleDataProviderServerEventLogHook implements SimpleDataProviderS
         if (!resource.endsWith(".eventLog")) {
             await dataProviderServer.create(resource + ".eventLog", {
                 type: "update",
+                date: new Date(Date.now()).toISOString(),
                 resource: resource,
                 filter: filter,
                 data: data,
