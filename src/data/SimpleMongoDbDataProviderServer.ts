@@ -1,13 +1,18 @@
 import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
 import { Connection, createConnection, Schema } from "mongoose";
+import { SimpleDataProviderServerEventHook } from "./SimpleDataProviderServerEventHook";
 
 export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
     connectionString: string;
-    private connection?: Connection;
-    private models: { [resource: string]: any };
+    hooks?: SimpleDataProviderServerEventHook[];
 
-    constructor(connectionString: string) {
+    private models: { [resource: string]: any };
+    private connection?: Connection;
+
+    constructor(connectionString: string, hooks?: SimpleDataProviderServerEventHook[]) {
         this.connectionString = connectionString;
+        this.hooks = hooks;
+
         this.models = {};
     }
 
@@ -145,6 +150,8 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
+        this.hooks?.forEach((hook) => hook.onCreate(resource, data));
+
         const model = this.getModel(resource);
 
         const query = model?.create(data);
@@ -160,6 +167,8 @@ export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer
     ): Promise<{
         data: any;
     }> {
+        this.hooks?.forEach((hook) => hook.onUpdate(resource, filter, data));
+
         const model = this.getModel(resource);
 
         const query = model?.updateOne(filter, data);
