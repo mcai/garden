@@ -4,7 +4,7 @@ import { SimpleController } from "../controllers/SimpleController";
 import moment from "moment";
 import { SimpleFormatting } from "../utils/SimpleFormatting";
 import { createServer } from "http";
-import SocketIO from "socket.io";
+import { SocketIOHelper } from "../realtime/SocketIOHelper";
 
 export class SimpleServer {
     static listen(controller: SimpleController, port: number) {
@@ -33,20 +33,7 @@ export class SimpleServer {
 
         const server = createServer(app);
 
-        const io = new SocketIO(server);
-
-        io.on("connection", (socket) => {
-            console.log("a user connected");
-
-            socket.on("disconnect", () => {
-                console.log("a user disconnected");
-            });
-
-            socket.on("chat", (msg) => {
-                console.log(`echo: ${JSON.stringify(msg)}`);
-                socket.emit("chat", msg);
-            });
-        });
+        SocketIOHelper.register(server);
 
         server.listen(port, () => {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());

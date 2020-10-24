@@ -29,7 +29,7 @@ export function listen(
             const now = SimpleFormatting.toFormattedDateTimeString(moment());
             const every = cronstrue.toString(task.every);
             const result = await task.action(dataProvider);
-            console.log(`[${now} SimpleServer] ${task.name}@"${every}"=${JSON.stringify(result)}`);
+            console.log(`[${now} SimpleServer] tasks.${task.name}@"${every}": result=${JSON.stringify(result)}`);
         });
         scheduler.schedule(task.every, task.name, {});
     });
