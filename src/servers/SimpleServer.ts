@@ -3,6 +3,8 @@ import cors from "cors";
 import { SimpleController } from "../controllers/SimpleController";
 import moment from "moment";
 import { SimpleFormatting } from "../utils/SimpleFormatting";
+import { createServer } from "http";
+import SocketIO from "socket.io";
 
 export class SimpleServer {
     static listen(controller: SimpleController, port: number) {
@@ -29,7 +31,24 @@ export class SimpleServer {
 
         controller.register(app);
 
-        app.listen(port, () => {
+        const server = createServer(app);
+
+        const io = new SocketIO(server);
+
+        io.on("connection", (socket) => {
+            console.log("a user connected");
+
+            socket.on("disconnect", () => {
+                console.log("a user disconnected");
+            });
+
+            socket.on("chat", (msg) => {
+                console.log(`echo: ${JSON.stringify(msg)}`);
+                socket.emit("chat", msg);
+            });
+        });
+
+        server.listen(port, () => {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());
             console.debug(`[${now} SimpleServer] listening: port=${port}`);
         });
