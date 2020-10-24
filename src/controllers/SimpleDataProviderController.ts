@@ -1,12 +1,12 @@
-import { SimpleDataProviderServer } from "../data/SimpleDataProviderServer";
+import { SimpleDataProvider } from "../dataProviders/SimpleDataProvider";
 import express from "express";
 import { SimpleController } from "./SimpleController";
 import { singular } from "pluralize";
 
-export class SimpleDataProviderBasedController implements SimpleController {
-    dataProvider: SimpleDataProviderServer;
+export class SimpleDataProviderController implements SimpleController {
+    dataProvider: SimpleDataProvider;
 
-    constructor(dataProvider: SimpleDataProviderServer) {
+    constructor(dataProvider: SimpleDataProvider) {
         this.dataProvider = dataProvider;
     }
 
@@ -19,7 +19,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         await this.dataProvider.connect();
 
         app.get(`/:resources/getList`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { paging, ordering, filter } = req.query;
             const result = await this.dataProvider.getList(
@@ -38,7 +38,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.get(`/:resources/getAll`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { ordering, filter } = req.query;
             const result = await this.dataProvider.getAll(
@@ -53,7 +53,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.get(`/:resources/countOne`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filter } = req.query;
             const result = await this.dataProvider.countOne(resource, filter);
@@ -61,7 +61,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.get(`/:resources/countMany`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filters } = req.query;
 
@@ -82,7 +82,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.get(`/:resources/getOne`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filter } = req.query;
             const result = await this.dataProvider.getOne(resource, filter);
@@ -90,7 +90,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.get(`/:resources/getMany`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filters } = req.query;
             const result = await this.dataProvider.getMany(resource, filters as any);
@@ -98,7 +98,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.post(`/:resources/create`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { data } = req.body;
             const result = await this.dataProvider.create(resource, data);
@@ -106,7 +106,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.post(`/:resources/update`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filter, data } = req.body;
             const result = await this.dataProvider.update(resource, filter, data);
@@ -114,7 +114,7 @@ export class SimpleDataProviderBasedController implements SimpleController {
         });
 
         app.post(`/:resources/delete`, async (req, res) => {
-            const resource = SimpleDataProviderBasedController.getResource(req);
+            const resource = SimpleDataProviderController.getResource(req);
 
             const { filter } = req.body;
             await this.dataProvider.delete(resource, filter);

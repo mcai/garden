@@ -1,4 +1,4 @@
-export interface SimpleDataProviderServer {
+export interface SimpleDataProvider {
     connect(): Promise<void>;
 
     getList(

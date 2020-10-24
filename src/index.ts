@@ -1,16 +1,13 @@
-import { SimpleMongoDbDataProviderServer } from "./data/SimpleMongoDbDataProviderServer";
+import { SimpleMongoDbDataProvider } from "./dataProviders/SimpleMongoDbDataProvider";
 import { SimpleServer } from "./servers/SimpleServer";
-import { SimpleDataProviderBasedController } from "./controllers/SimpleDataProviderBasedController";
-import { SimpleDataProviderServerEventHook } from "./data/SimpleDataProviderServerEventHook";
-import { SimpleDataProviderServerEventLogHook } from "./data/SimpleDataProviderServerEventLogHook";
+import { SimpleDataProviderController } from "./controllers/SimpleDataProviderController";
+import { SimpleHook } from "./hooks/SimpleHook";
+import { SimpleEventLogHook } from "./hooks/SimpleEventLogHook";
 
-export function listen(mongoDbConnectionString: string, port: number, hooks?: SimpleDataProviderServerEventHook[]) {
+export function listen(mongoDbConnectionString: string, port: number, hooks?: SimpleHook[]) {
     new SimpleServer(port, [
-        new SimpleDataProviderBasedController(
-            new SimpleMongoDbDataProviderServer(mongoDbConnectionString, [
-                new SimpleDataProviderServerEventLogHook(),
-                ...(hooks ?? []),
-            ]),
+        new SimpleDataProviderController(
+            new SimpleMongoDbDataProvider(mongoDbConnectionString, [new SimpleEventLogHook(), ...(hooks ?? [])]),
         ),
     ]).listen();
 }

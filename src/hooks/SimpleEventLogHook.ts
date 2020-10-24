@@ -1,8 +1,8 @@
-import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
-import { SimpleDataProviderServerEventHook } from "./SimpleDataProviderServerEventHook";
+import { SimpleDataProvider } from "../dataProviders/SimpleDataProvider";
+import { SimpleHook } from "./SimpleHook";
 
-export class SimpleDataProviderServerEventLogHook implements SimpleDataProviderServerEventHook {
-    async onCreate(dataProviderServer: SimpleDataProviderServer, resource: string, data: any): Promise<void> {
+export class SimpleEventLogHook implements SimpleHook {
+    async onCreate(dataProviderServer: SimpleDataProvider, resource: string, data: any): Promise<void> {
         if (!resource.endsWith(".eventLog")) {
             await dataProviderServer.create(resource + ".eventLog", {
                 type: "create",
@@ -13,12 +13,7 @@ export class SimpleDataProviderServerEventLogHook implements SimpleDataProviderS
         }
     }
 
-    async onUpdate(
-        dataProviderServer: SimpleDataProviderServer,
-        resource: string,
-        filter: any,
-        data: any,
-    ): Promise<void> {
+    async onUpdate(dataProviderServer: SimpleDataProvider, resource: string, filter: any, data: any): Promise<void> {
         if (!resource.endsWith(".eventLog")) {
             await dataProviderServer.create(resource + ".eventLog", {
                 type: "update",

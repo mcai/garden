@@ -1,15 +1,15 @@
-import { SimpleDataProviderServer } from "./SimpleDataProviderServer";
+import { SimpleDataProvider } from "./SimpleDataProvider";
 import { Connection, createConnection, Schema } from "mongoose";
-import { SimpleDataProviderServerEventHook } from "./SimpleDataProviderServerEventHook";
+import { SimpleHook } from "../hooks/SimpleHook";
 
-export class SimpleMongoDbDataProviderServer implements SimpleDataProviderServer {
+export class SimpleMongoDbDataProvider implements SimpleDataProvider {
     connectionString: string;
-    hooks?: SimpleDataProviderServerEventHook[];
+    hooks?: SimpleHook[];
 
     private models: { [resource: string]: any };
     private connection?: Connection;
 
-    constructor(connectionString: string, hooks?: SimpleDataProviderServerEventHook[]) {
+    constructor(connectionString: string, hooks?: SimpleHook[]) {
         this.connectionString = connectionString;
         this.hooks = hooks;
 
