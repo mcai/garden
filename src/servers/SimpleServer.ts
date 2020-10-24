@@ -5,15 +5,7 @@ import moment from "moment";
 import { SimpleFormatting } from "../utils/SimpleFormatting";
 
 export class SimpleServer {
-    port: number;
-    controllers: SimpleController[];
-
-    constructor(port: number, controllers: SimpleController[]) {
-        this.port = port;
-        this.controllers = controllers;
-    }
-
-    listen() {
+    static listen(controller: SimpleController, port: number) {
         const app = express();
 
         app.use(express.json({ limit: "100mb" }));
@@ -35,13 +27,11 @@ export class SimpleServer {
             next();
         });
 
-        this.controllers.forEach((controller: SimpleController) => {
-            controller.register(app).then(() => {});
-        });
+        controller.register(app);
 
-        app.listen(this.port, () => {
+        app.listen(port, () => {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());
-            console.debug(`[${now} SimpleServer] listening: port=${this.port}`);
+            console.debug(`[${now} SimpleServer] listening: port=${port}`);
         });
     }
 }

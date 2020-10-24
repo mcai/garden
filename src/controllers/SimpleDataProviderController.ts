@@ -15,9 +15,7 @@ export class SimpleDataProviderController implements SimpleController {
         return singular(resources);
     }
 
-    async register(app: express.Express): Promise<void> {
-        await this.dataProvider.connect();
-
+    register(app: express.Express): void {
         app.get(`/:resources/getList`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
