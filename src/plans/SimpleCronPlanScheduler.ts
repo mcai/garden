@@ -2,21 +2,21 @@ import { SimplePlanScheduler } from "./SimplePlanScheduler";
 import { schedule, ScheduledTask } from "node-cron";
 
 export class SimpleCronPlanScheduler implements SimplePlanScheduler {
-    private plans: { [name: string]: { name: string; action: (params: any) => void } };
+    private actions: { [name: string]: (params: any) => void };
     private scheduledTasks: ScheduledTask[];
 
     constructor() {
-        this.plans = {};
+        this.actions = {};
         this.scheduledTasks = [];
     }
 
     register(name: string, action: (params: any) => void) {
-        this.plans[name] = { name: name, action: action };
+        this.actions[name] = action;
     }
 
     schedule(every: string, name: string, params: any): void {
-        const plan = this.plans[name];
-        const scheduledTask = schedule(every, () => plan.action(params));
+        const action = this.actions[name];
+        const scheduledTask = schedule(every, () => action(params));
         this.scheduledTasks = [...this.scheduledTasks, scheduledTask];
     }
 
