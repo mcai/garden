@@ -16,7 +16,15 @@ export class SimpleCronPlanScheduler implements SimplePlanScheduler {
 
     schedule(every: string, name: string, params: any): void {
         const action = this.actions[name];
-        const scheduledTask = schedule(every, () => action(params));
+        const scheduledTask = schedule(every, () =>
+            action({
+                action: {
+                    every: every,
+                    name: name,
+                },
+                ...params,
+            }),
+        );
         this.scheduledTasks = [...this.scheduledTasks, scheduledTask];
     }
 

@@ -12,12 +12,12 @@ const dataProvider = new SimpleMongoDbDataProvider(connectionString);
 dataProvider.connect().then(() => {
     const scheduler = new SimpleCronPlanScheduler();
 
-    scheduler.register("count", async ({ resource, filter }) => {
+    scheduler.register("count", async ({ action, resource, filter }) => {
         const count = await dataProvider.countOne(resource, filter);
         console.log(
-            `[${SimpleFormatting.toFormattedDateTimeString(
-                moment(),
-            )} count] resource=${resource}, filter=${JSON.stringify(filter)}, count=${count.data}`,
+            `[${SimpleFormatting.toFormattedDateTimeString(moment())} SimpleServer::${action.name}] every=${
+                action.every
+            }, resource=${resource}, filter=${JSON.stringify(filter)}, count=${count.data}`,
         );
     });
 
