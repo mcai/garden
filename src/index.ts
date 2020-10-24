@@ -4,8 +4,6 @@ import { SimpleDataProviderController } from "./controllers/SimpleDataProviderCo
 import { SimpleHook } from "./hooks/SimpleHook";
 import { SimpleEventLogHook } from "./hooks/SimpleEventLogHook";
 import { SimpleCronPlanScheduler } from "./plans/SimpleCronPlanScheduler";
-import { SimpleFormatting } from "./utils/SimpleFormatting";
-import moment from "moment";
 import { SimpleDataProvider } from "./dataProviders/SimpleDataProvider";
 
 export function listen(
