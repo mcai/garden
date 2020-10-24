@@ -41,12 +41,14 @@ export class SocketIOServerHelper {
 
     private static onDisconnect(socket: Socket) {
         const now = SimpleFormatting.toFormattedDateTimeString(moment());
-        console.log(`[${now} SimpleServer] socketio.onDisconnect: socket.id=${socket.id}`);
+        console.log(`[${now} SimpleServer] socketio.server.onDisconnect: socket.id=${socket.id}`);
     }
 
     private static onEcho(socket: Socket, params: any) {
         const now = SimpleFormatting.toFormattedDateTimeString(moment());
-        console.log(`[${now} SimpleServer] socketio.onEcho: socket.id=${socket.id}, params=${JSON.stringify(params)}`);
+        console.log(
+            `[${now} SimpleServer] socketio.server.onEcho: socket.id=${socket.id}, params=${JSON.stringify(params)}`,
+        );
         socket.emit("echo", params);
     }
 }
