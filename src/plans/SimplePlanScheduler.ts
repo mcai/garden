@@ -3,7 +3,7 @@ import { SimplePlan } from "./SimplePlan";
 export interface SimplePlanScheduler {
     register(plan: SimplePlan): void;
 
-    schedule(name: string, params: any): void;
+    schedule(every: string, name: string, params: any): void;
 
     start(): void;
 
