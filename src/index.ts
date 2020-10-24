@@ -5,12 +5,15 @@ import { SimpleHook } from "./hooks/SimpleHook";
 import { SimpleEventLogHook } from "./hooks/SimpleEventLogHook";
 import { SimpleCronPlanScheduler } from "./plans/SimpleCronPlanScheduler";
 import { SimpleDataProvider } from "./dataProviders/SimpleDataProvider";
+import { SimpleFormatting } from "./utils/SimpleFormatting";
+import moment from "moment";
+import cronstrue from "cronstrue";
 
 export function listen(
     mongoDbConnectionString: string,
     port: number,
     hooks?: SimpleHook[],
-    tasks?: { every: string; name: string; action: (dataProvider: SimpleDataProvider) => void }[],
+    tasks?: { every: string; name: string; action: (dataProvider: SimpleDataProvider) => Promise<any> }[],
 ) {
     const dataProvider = new SimpleMongoDbDataProvider(mongoDbConnectionString, [
         new SimpleEventLogHook(),
@@ -22,7 +25,12 @@ export function listen(
     const scheduler = new SimpleCronPlanScheduler();
 
     tasks?.forEach((task) => {
-        scheduler.register(task.name, () => task.action(dataProvider));
+        scheduler.register(task.name, async (params: any) => {
+            const now = SimpleFormatting.toFormattedDateTimeString(moment());
+            const every = cronstrue.toString(task.every);
+            const result = await task.action(dataProvider);
+            console.log(`[${now} SimpleServer] ${task.name}@"${every}"=${JSON.stringify(result)}`);
+        });
         scheduler.schedule(task.every, task.name, {});
     });
 
