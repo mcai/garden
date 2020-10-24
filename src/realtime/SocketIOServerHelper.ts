@@ -3,8 +3,14 @@ import { SimpleFormatting } from "../utils/SimpleFormatting";
 import moment from "moment";
 import { Server } from "http";
 
-export class SocketIOHelper {
-    static register(server: Server) {
+export class SocketIOServerHelper {
+    static registerServer(
+        server: Server,
+        socketIOEventHandlers?: {
+            name: string;
+            action: (socket: Socket, params: any) => void;
+        }[],
+    ) {
         const io = new SocketIO(server);
 
         io.on("connection", (socket) => {
@@ -14,8 +20,14 @@ export class SocketIOHelper {
                 this.onDisconnect(socket);
             });
 
-            socket.on("chat", (params) => {
-                this.onChat(socket, params);
+            socket.on("echo", (params) => {
+                this.onEcho(socket, params);
+            });
+
+            socketIOEventHandlers?.forEach((eventHandeler) => {
+                socket.on(eventHandeler.name, (params) => {
+                    eventHandeler.action(socket, params);
+                });
             });
         });
     }
@@ -32,9 +44,9 @@ export class SocketIOHelper {
         console.log(`[${now} SimpleServer] socketio.onDisconnect: socket.id=${socket.id}`);
     }
 
-    private static onChat(socket: Socket, params: any) {
+    private static onEcho(socket: Socket, params: any) {
         const now = SimpleFormatting.toFormattedDateTimeString(moment());
-        console.log(`[${now} SimpleServer] socketio.onChat: socket.id=${socket.id}, params=${JSON.stringify(params)}`);
-        socket.emit("chat", params);
+        console.log(`[${now} SimpleServer] socketio.onEcho: socket.id=${socket.id}, params=${JSON.stringify(params)}`);
+        socket.emit("echo", params);
     }
 }

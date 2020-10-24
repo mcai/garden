@@ -4,10 +4,18 @@ import { SimpleController } from "../controllers/SimpleController";
 import moment from "moment";
 import { SimpleFormatting } from "../utils/SimpleFormatting";
 import { createServer } from "http";
-import { SocketIOHelper } from "../realtime/SocketIOHelper";
+import { SocketIOServerHelper } from "../realtime/SocketIOServerHelper";
+import { Socket } from "socket.io";
 
 export class SimpleServer {
-    static listen(controller: SimpleController, port: number) {
+    static listen(
+        controller: SimpleController,
+        port: number,
+        socketIOEventHandlers?: {
+            name: string;
+            action: (socket: Socket, params: any) => void;
+        }[],
+    ) {
         const app = express();
 
         app.use(express.json({ limit: "100mb" }));
@@ -33,7 +41,7 @@ export class SimpleServer {
 
         const server = createServer(app);
 
-        SocketIOHelper.register(server);
+        SocketIOServerHelper.registerServer(server, socketIOEventHandlers);
 
         server.listen(port, () => {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());

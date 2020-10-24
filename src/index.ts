@@ -8,12 +8,17 @@ import { SimpleDataProvider } from "./dataProviders/SimpleDataProvider";
 import { SimpleFormatting } from "./utils/SimpleFormatting";
 import moment from "moment";
 import cronstrue from "cronstrue";
+import { Socket } from "socket.io";
 
 export function listen(
     mongoDbConnectionString: string,
     port: number,
     hooks?: SimpleHook[],
     tasks?: { every: string; name: string; action: (dataProvider: SimpleDataProvider) => Promise<any> }[],
+    socketIOEventHandlers?: {
+        name: string;
+        action: (socket: Socket, params: any) => void;
+    }[],
 ) {
     const dataProvider = new SimpleMongoDbDataProvider(mongoDbConnectionString, [
         new SimpleEventLogHook(),
@@ -36,5 +41,5 @@ export function listen(
 
     scheduler.start();
 
-    SimpleServer.listen(new SimpleDataProviderController(dataProvider), port);
+    SimpleServer.listen(new SimpleDataProviderController(dataProvider), port, socketIOEventHandlers);
 }

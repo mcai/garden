@@ -13,10 +13,10 @@ socket.on("disconnect", () => {
     console.log("a user disconnected");
 });
 
-socket.on("chat", (params: any) => {
+socket.on("echo", (params: any) => {
     const now = SimpleFormatting.toFormattedDateTimeString(moment());
     console.log(
-        `[${now} SimpleServer.DemoClient] socketio.onChat: socket.id=${socket.id}, params=${JSON.stringify(params)}`,
+        `[${now} SimpleServer.DemoClient] socketio.onEcho: socket.id=${socket.id}, params=${JSON.stringify(params)}`,
     );
 });
 
@@ -28,9 +28,9 @@ listen(connectionString, port, undefined, [
     },
     {
         every: "* * * * *",
-        name: "socket.io.test",
+        name: "socket.io.echo",
         action: (dataProvider) => {
-            socket.emit("chat", "hello");
+            socket.emit("echo", "hello");
             return Promise.resolve(undefined);
         },
     },
