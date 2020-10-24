@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { SimpleController } from "../controllers/SimpleController";
+import moment from "moment";
+import { SimpleFormatting } from "../utils/SimpleFormatting";
 
 export class SimpleServer {
     port: number;
@@ -25,8 +27,9 @@ export class SimpleServer {
             const params = JSON.stringify(req.params);
             const query = JSON.stringify(req.query);
             const body = JSON.stringify(req.body);
+            const now = SimpleFormatting.toFormattedDateTimeString(moment());
             console.debug(
-                `[SimpleServer] call, path=${path},method=${method},params=${params},query=${query},body=${body}`,
+                `[${now} SimpleServer] call: path=${path},method=${method},params=${params},query=${query},body=${body}`,
             );
 
             next();
@@ -36,10 +39,9 @@ export class SimpleServer {
             controller.register(app).then(() => {});
         });
 
-        // app.get("*", function (req, res) {
-        //     return res.status(404).send(`404 error: not found: ${req.url}`);
-        // });
-
-        app.listen(this.port, () => console.log(`Garden server listening on port ${this.port}!`));
+        app.listen(this.port, () => {
+            const now = SimpleFormatting.toFormattedDateTimeString(moment());
+            console.debug(`[${now} SimpleServer] listening: port=${this.port}`);
+        });
     }
 }

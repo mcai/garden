@@ -1,6 +1,6 @@
 {
    "name": "@itecgo/garden",
-   "version": "0.0.62",
+   "version": "0.0.63",
    "description": "garden library",
    "repository": {
       "type": "git",
@@ -23,6 +23,7 @@
    "dependencies": {
       "cors": "^2.8.5",
       "express": "^4.17.1",
+      "moment": "^2.29.1",
       "mongoose": "^5.10.9",
       "pluralize": "^8.0.0"
    },
