@@ -1,7 +1,7 @@
 import { SimpleDataProvider } from "./SimpleDataProvider";
 import { Connection, createConnection, Schema } from "mongoose";
 import { SimpleHook } from "../hooks/SimpleHook";
-import { JSONPath } from "jsonpath-plus";
+import jsonata from "jsonata";
 
 export class SimpleMongoDbDataProvider implements SimpleDataProvider {
     connectionString: string;
@@ -36,7 +36,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         },
         filter: any,
         transform?: {
-            jsonPath: string;
+            jsonata: string;
         },
     ): Promise<{
         data: any[];
@@ -59,10 +59,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = JSONPath({
-                json: data,
-                path: transform.jsonPath,
-            });
+            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
         }
 
         return {
@@ -79,7 +76,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         },
         filter: any,
         transform?: {
-            jsonPath: string;
+            jsonata: string;
         },
     ): Promise<{
         data: any[];
@@ -95,12 +92,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = data.map((item: any) =>
-                JSONPath({
-                    json: item,
-                    path: transform.jsonPath,
-                }),
-            );
+            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
         }
 
         return {
@@ -112,7 +104,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         resource: string,
         filter: any,
         transform?: {
-            jsonPath: string;
+            jsonata: string;
         },
     ): Promise<{
         data: any;
@@ -124,10 +116,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = JSONPath({
-                json: data,
-                path: transform.jsonPath,
-            });
+            data = jsonata(transform.jsonata).evaluate(data);
         }
 
         return {
@@ -139,7 +128,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         resource: string,
         filters: any[],
         transform?: {
-            jsonPath: string;
+            jsonata: string;
         },
     ): Promise<{ data: any[] }> {
         const model = this.getModel(resource);
@@ -149,12 +138,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x)));
 
         if (transform != undefined) {
-            data = data.map((item: any) =>
-                JSONPath({
-                    json: item,
-                    path: transform.jsonPath,
-                }),
-            );
+            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
         }
 
         return {
