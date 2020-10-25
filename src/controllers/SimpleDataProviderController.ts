@@ -50,6 +50,22 @@ export class SimpleDataProviderController implements SimpleController {
             return res.json(result);
         });
 
+        app.get(`/:resources/getOne`, async (req, res) => {
+            const resource = SimpleDataProviderController.getResource(req);
+
+            const { filter } = req.query;
+            const result = await this.dataProvider.getOne(resource, filter);
+            return res.json(result);
+        });
+
+        app.get(`/:resources/getMany`, async (req, res) => {
+            const resource = SimpleDataProviderController.getResource(req);
+
+            const { filters } = req.query;
+            const result = await this.dataProvider.getMany(resource, filters as any);
+            return res.json(result);
+        });
+
         app.get(`/:resources/countOne`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
@@ -76,22 +92,6 @@ export class SimpleDataProviderController implements SimpleController {
             });
 
             const result = await this.dataProvider.countMany(resource, filters1);
-            return res.json(result);
-        });
-
-        app.get(`/:resources/getOne`, async (req, res) => {
-            const resource = SimpleDataProviderController.getResource(req);
-
-            const { filter } = req.query;
-            const result = await this.dataProvider.getOne(resource, filter);
-            return res.json(result);
-        });
-
-        app.get(`/:resources/getMany`, async (req, res) => {
-            const resource = SimpleDataProviderController.getResource(req);
-
-            const { filters } = req.query;
-            const result = await this.dataProvider.getMany(resource, filters as any);
             return res.json(result);
         });
 
