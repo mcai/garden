@@ -12,7 +12,9 @@ export interface SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any[];
         total: number;
@@ -25,7 +27,9 @@ export interface SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any[];
     }>;
@@ -33,7 +37,9 @@ export interface SimpleDataProvider {
     getOne(
         resource: string,
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any;
     }>;
@@ -41,7 +47,9 @@ export interface SimpleDataProvider {
     getMany(
         resource: string,
         filters: any[],
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any[];
     }>;

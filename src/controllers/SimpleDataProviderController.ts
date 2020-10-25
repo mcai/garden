@@ -19,7 +19,7 @@ export class SimpleDataProviderController implements SimpleController {
         app.get(`/:resources/getList`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
-            const { paging, ordering, filter, jsonPath } = req.query;
+            const { paging, ordering, filter, transform } = req.query;
             const result = await this.dataProvider.getList(
                 resource,
                 {
@@ -31,7 +31,7 @@ export class SimpleDataProviderController implements SimpleController {
                     descending: (ordering as any).descending == "true",
                 },
                 filter,
-                jsonPath as any,
+                transform as any,
             );
             return res.json(result);
         });
@@ -39,7 +39,7 @@ export class SimpleDataProviderController implements SimpleController {
         app.get(`/:resources/getAll`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
-            const { ordering, filter, jsonPath } = req.query;
+            const { ordering, filter, transform } = req.query;
             const result = await this.dataProvider.getAll(
                 resource,
                 {
@@ -47,7 +47,7 @@ export class SimpleDataProviderController implements SimpleController {
                     descending: (ordering as any).descending == "true",
                 },
                 filter,
-                jsonPath as any,
+                transform as any,
             );
             return res.json(result);
         });
@@ -55,16 +55,16 @@ export class SimpleDataProviderController implements SimpleController {
         app.get(`/:resources/getOne`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
-            const { filter, jsonPath } = req.query;
-            const result = await this.dataProvider.getOne(resource, filter, jsonPath as any);
+            const { filter, transform } = req.query;
+            const result = await this.dataProvider.getOne(resource, filter, transform as any);
             return res.json(result);
         });
 
         app.get(`/:resources/getMany`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
-            const { filters, jsonPath } = req.query;
-            const result = await this.dataProvider.getMany(resource, filters as any, jsonPath as any);
+            const { filters, transform } = req.query;
+            const result = await this.dataProvider.getMany(resource, filters as any, transform as any);
             return res.json(result);
         });
 

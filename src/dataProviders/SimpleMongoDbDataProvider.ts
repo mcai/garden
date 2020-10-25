@@ -35,7 +35,9 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any[];
         total: number;
@@ -56,10 +58,10 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         let data = JSON.parse(JSON.stringify(await query));
 
-        if (jsonPath) {
+        if (transform != undefined) {
             data = JSONPath({
                 json: data,
-                path: jsonPath,
+                path: transform.jsonPath,
             });
         }
 
@@ -76,7 +78,9 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any[];
     }> {
@@ -90,11 +94,11 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         let data = JSON.parse(JSON.stringify(await query));
 
-        if (jsonPath) {
+        if (transform != undefined) {
             data = data.map((item: any) =>
                 JSONPath({
                     json: item,
-                    path: jsonPath,
+                    path: transform.jsonPath,
                 }),
             );
         }
@@ -107,7 +111,9 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
     async getOne(
         resource: string,
         filter: any,
-        jsonPath?: string,
+        transform?: {
+            jsonPath: string;
+        },
     ): Promise<{
         data: any;
     }> {
@@ -117,10 +123,10 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         let data = JSON.parse(JSON.stringify(await query));
 
-        if (jsonPath) {
+        if (transform != undefined) {
             data = JSONPath({
                 json: data,
-                path: jsonPath,
+                path: transform.jsonPath,
             });
         }
 
@@ -129,18 +135,24 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         };
     }
 
-    async getMany(resource: string, filters: any[], jsonPath?: string): Promise<{ data: any[] }> {
+    async getMany(
+        resource: string,
+        filters: any[],
+        transform?: {
+            jsonPath: string;
+        },
+    ): Promise<{ data: any[] }> {
         const model = this.getModel(resource);
 
         const query = filters.map((filter) => model?.findOne(filter));
 
         let data = (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x)));
 
-        if (jsonPath) {
+        if (transform != undefined) {
             data = data.map((item: any) =>
                 JSONPath({
                     json: item,
-                    path: jsonPath,
+                    path: transform.jsonPath,
                 }),
             );
         }
