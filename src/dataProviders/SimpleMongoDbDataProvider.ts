@@ -1,12 +1,13 @@
 import { SimpleDataProvider } from "./SimpleDataProvider";
 import { Connection, createConnection, Schema } from "mongoose";
 import { SimpleHook } from "../hooks/SimpleHook";
+import { JSONPath } from "jsonpath-plus";
 
 export class SimpleMongoDbDataProvider implements SimpleDataProvider {
     connectionString: string;
     hooks?: SimpleHook[];
 
-    private models: { [resource: string]: any };
+    private readonly models: { [resource: string]: any };
     private connection?: Connection;
 
     constructor(connectionString: string, hooks?: SimpleHook[]) {
@@ -23,14 +24,6 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         });
     }
 
-    private getModel(resource: string) {
-        if (!(resource in this.models)) {
-            this.models[resource] = this.connection?.model(resource, new Schema({}, { strict: false }));
-        }
-
-        return this.models[resource];
-    }
-
     async getList(
         resource: string,
         paging: {
@@ -42,6 +35,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
+        jsonPath?: string,
     ): Promise<{
         data: any[];
         total: number;
@@ -60,7 +54,14 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         query = query?.skip(paging.pageSize * paging.pageNum).limit(paging.pageSize);
 
-        const data = JSON.parse(JSON.stringify(await query));
+        let data = JSON.parse(JSON.stringify(await query));
+
+        if (jsonPath) {
+            data = JSONPath({
+                json: data,
+                path: jsonPath,
+            });
+        }
 
         return {
             data: data,
@@ -75,6 +76,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             descending: boolean;
         },
         filter: any,
+        jsonPath?: string,
     ): Promise<{
         data: any[];
     }> {
@@ -86,8 +88,65 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             [ordering.key]: ordering.descending ? -1 : 1,
         });
 
+        let data = JSON.parse(JSON.stringify(await query));
+
+        if (jsonPath) {
+            data = data.map((item: any) =>
+                JSONPath({
+                    json: item,
+                    path: jsonPath,
+                }),
+            );
+        }
+
         return {
-            data: JSON.parse(JSON.stringify(await query)),
+            data: data,
+        };
+    }
+
+    async getOne(
+        resource: string,
+        filter: any,
+        jsonPath?: string,
+    ): Promise<{
+        data: any;
+    }> {
+        const model = this.getModel(resource);
+
+        const query = model?.findOne(filter);
+
+        let data = JSON.parse(JSON.stringify(await query));
+
+        if (jsonPath) {
+            data = JSONPath({
+                json: data,
+                path: jsonPath,
+            });
+        }
+
+        return {
+            data: data,
+        };
+    }
+
+    async getMany(resource: string, filters: any[], jsonPath?: string): Promise<{ data: any[] }> {
+        const model = this.getModel(resource);
+
+        const query = filters.map((filter) => model?.findOne(filter));
+
+        let data = (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x)));
+
+        if (jsonPath) {
+            data = data.map((item: any) =>
+                JSONPath({
+                    json: item,
+                    path: jsonPath,
+                }),
+            );
+        }
+
+        return {
+            data: data,
         };
     }
 
@@ -114,30 +173,6 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         const model = this.getModel(resource);
 
         const query = filters.map((filter) => model?.find(filter)?.countDocuments());
-
-        return {
-            data: (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x))),
-        };
-    }
-
-    async getOne(
-        resource: string,
-        filter: any,
-    ): Promise<{
-        data: any;
-    }> {
-        const model = this.getModel(resource);
-
-        const query = model?.findOne(filter);
-        return {
-            data: JSON.parse(JSON.stringify(await query)),
-        };
-    }
-
-    async getMany(resource: string, filters: any[]): Promise<{ data: any[] }> {
-        const model = this.getModel(resource);
-
-        const query = filters.map((filter) => model?.findOne(filter));
 
         return {
             data: (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x))),
@@ -182,5 +217,13 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         const query = model?.deleteOne(filter);
         return JSON.parse(JSON.stringify(await query));
+    }
+
+    private getModel(resource: string) {
+        if (!(resource in this.models)) {
+            this.models[resource] = this.connection?.model(resource, new Schema({}, { strict: false }));
+        }
+
+        return this.models[resource];
     }
 }
