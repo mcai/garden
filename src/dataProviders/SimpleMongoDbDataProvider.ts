@@ -68,7 +68,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
+            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
 
         return {
@@ -101,7 +101,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
+            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
 
         return {
@@ -147,7 +147,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x)));
 
         if (transform != undefined) {
-            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
+            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
 
         return {
