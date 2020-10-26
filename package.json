@@ -1,6 +1,6 @@
 {
    "name": "@itecgo/garden",
-   "version": "0.0.72",
+   "version": "0.0.73",
    "description": "garden library",
    "repository": {
       "type": "git",

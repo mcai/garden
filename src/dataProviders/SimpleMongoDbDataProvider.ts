@@ -24,6 +24,15 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         });
     }
 
+    private static transformByJsonata(transform: { jsonata: string }, json: any): any {
+        try {
+            return jsonata(transform.jsonata).evaluate(json);
+        } catch (e) {
+            console.log(e);
+            return json;
+        }
+    }
+
     async getList(
         resource: string,
         paging: {
@@ -59,7 +68,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
+            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
         }
 
         return {
@@ -92,7 +101,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
+            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
         }
 
         return {
@@ -116,7 +125,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
-            data = jsonata(transform.jsonata).evaluate(data);
+            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
 
         return {
@@ -138,7 +147,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = (await Promise.all(query)).map((x: any) => JSON.parse(JSON.stringify(x)));
 
         if (transform != undefined) {
-            data = data.map((item: any) => jsonata(transform.jsonata).evaluate(item));
+            data = data.map((item: any) => SimpleMongoDbDataProvider.transformByJsonata(transform, item));
         }
 
         return {
