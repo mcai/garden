@@ -29,7 +29,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
             return jsonata(transform.jsonata).evaluate(json);
         } catch (e) {
             console.log(e);
-            return json;
+            return {};
         }
     }
 
