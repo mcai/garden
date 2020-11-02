@@ -55,7 +55,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         const countQuery = model?.find(filter);
 
-        const total = JSON.parse(JSON.stringify(await countQuery?.countDocuments()));
+        let total = JSON.parse(JSON.stringify(await countQuery?.countDocuments()));
 
         let query = model?.find(filter);
 
@@ -68,6 +68,14 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
         let data = JSON.parse(JSON.stringify(await query));
 
         if (transform != undefined) {
+            const totalQuery = model?.find(filter);
+
+            let totalData = JSON.parse(JSON.stringify(await totalQuery));
+
+            totalData = SimpleMongoDbDataProvider.transformByJsonata(transform, totalData);
+
+            total = totalData.length;
+
             data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
 
