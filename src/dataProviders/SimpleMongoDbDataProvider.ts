@@ -76,7 +76,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
             data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
 
-            if (!(data instanceof Array)) {
+            if (data != undefined && !(data instanceof Array)) {
                 data = [data];
             }
 
