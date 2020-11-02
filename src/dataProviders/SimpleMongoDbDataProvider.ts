@@ -74,7 +74,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
             totalData = SimpleMongoDbDataProvider.transformByJsonata(transform, totalData);
 
-            total = totalData.length;
+            total = totalData?.length ?? 0;
 
             data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
         }
