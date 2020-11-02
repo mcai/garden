@@ -53,9 +53,38 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
     }> {
         const model = this.getModel(resource);
 
+        if (transform != undefined) {
+            let countQuery = model?.find(filter);
+
+            countQuery = countQuery?.sort({
+                [ordering.key]: ordering.descending ? -1 : 1,
+            });
+
+            let totalData = JSON.parse(JSON.stringify(await countQuery));
+
+            totalData = SimpleMongoDbDataProvider.transformByJsonata(transform, totalData);
+
+            const total = totalData?.length ?? 0;
+
+            let query = model?.find(filter);
+
+            query = query?.sort({
+                [ordering.key]: ordering.descending ? -1 : 1,
+            });
+
+            let data = JSON.parse(JSON.stringify(await query));
+
+            data = data?.slice(paging.pageSize * paging.pageNum, paging.pageSize * paging.pageNum + paging.pageSize);
+
+            return {
+                data: data,
+                total: total,
+            };
+        }
+
         const countQuery = model?.find(filter);
 
-        let total = JSON.parse(JSON.stringify(await countQuery?.countDocuments()));
+        const total = JSON.parse(JSON.stringify(await countQuery?.countDocuments()));
 
         let query = model?.find(filter);
 
@@ -65,19 +94,7 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
         query = query?.skip(paging.pageSize * paging.pageNum).limit(paging.pageSize);
 
-        let data = JSON.parse(JSON.stringify(await query));
-
-        if (transform != undefined) {
-            const totalQuery = model?.find(filter);
-
-            let totalData = JSON.parse(JSON.stringify(await totalQuery));
-
-            totalData = SimpleMongoDbDataProvider.transformByJsonata(transform, totalData);
-
-            total = totalData?.length ?? 0;
-
-            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
-        }
+        const data = JSON.parse(JSON.stringify(await query));
 
         return {
             data: data,
