@@ -74,6 +74,8 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
             let data = JSON.parse(JSON.stringify(await query));
 
+            data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
+
             data = data?.slice(paging.pageSize * paging.pageNum, paging.pageSize * paging.pageNum + paging.pageSize);
 
             return {
