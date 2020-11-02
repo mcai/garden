@@ -15,6 +15,20 @@ export class SimpleDataProviderController implements SimpleController {
         return singular(resources);
     }
 
+    private transformFilters(filters: any) {
+        const keys = [...((filters as any)[Object.keys(filters as any)?.[0] ?? ""] as any[]).keys()];
+
+        return keys.map((index: number) => {
+            const filter: any = {};
+
+            Object.keys(filters as any).forEach((key) => {
+                filter[key] = ((filters as any)[key] as any)[index];
+            });
+
+            return filter;
+        });
+    }
+
     register(app: express.Express): void {
         app.get(`/:resources/getList`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
@@ -64,7 +78,7 @@ export class SimpleDataProviderController implements SimpleController {
             const resource = SimpleDataProviderController.getResource(req);
 
             const { filters, transform } = req.query;
-            const result = await this.dataProvider.getMany(resource, filters as any, transform as any);
+            const result = await this.dataProvider.getMany(resource, this.transformFilters(filters), transform as any);
             return res.json(result);
         });
 
@@ -80,20 +94,7 @@ export class SimpleDataProviderController implements SimpleController {
             const resource = SimpleDataProviderController.getResource(req);
 
             const { filters } = req.query;
-
-            const keys = [...((filters as any)[Object.keys(filters as any)?.[0] ?? ""] as any[]).keys()];
-
-            const filters1 = keys.map((index: number) => {
-                const filter: any = {};
-
-                Object.keys(filters as any).forEach((key) => {
-                    filter[key] = ((filters as any)[key] as any)[index];
-                });
-
-                return filter;
-            });
-
-            const result = await this.dataProvider.countMany(resource, filters1);
+            const result = await this.dataProvider.countMany(resource, this.transformFilters(filters));
             return res.json(result);
         });
 
