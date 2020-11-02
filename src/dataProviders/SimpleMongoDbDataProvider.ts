@@ -76,6 +76,10 @@ export class SimpleMongoDbDataProvider implements SimpleDataProvider {
 
             data = SimpleMongoDbDataProvider.transformByJsonata(transform, data);
 
+            if (!(data instanceof Array)) {
+                data = [data];
+            }
+
             try {
                 data = data?.slice(
                     paging.pageSize * paging.pageNum,
