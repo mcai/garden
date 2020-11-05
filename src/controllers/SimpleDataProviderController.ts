@@ -2,12 +2,15 @@ import { SimpleDataProvider } from "../dataProviders/SimpleDataProvider";
 import express from "express";
 import { SimpleController } from "./SimpleController";
 import { singular } from "pluralize";
+import moment from "moment";
 
 export class SimpleDataProviderController implements SimpleController {
     dataProvider: SimpleDataProvider;
+    overrideDateOnCreate: boolean;
 
-    constructor(dataProvider: SimpleDataProvider) {
+    constructor(dataProvider: SimpleDataProvider, overrideDateOnCreate: boolean) {
         this.dataProvider = dataProvider;
+        this.overrideDateOnCreate = overrideDateOnCreate;
     }
 
     private static getResource(req: any) {
@@ -101,7 +104,15 @@ export class SimpleDataProviderController implements SimpleController {
         app.post(`/:resources/create`, async (req, res) => {
             const resource = SimpleDataProviderController.getResource(req);
 
-            const { data } = req.body;
+            let { data } = req.body;
+
+            if (this.overrideDateOnCreate) {
+                data = {
+                    ...data,
+                    date: moment().toISOString(),
+                };
+            }
+
             const result = await this.dataProvider.create(resource, data);
             return res.json(result);
         });

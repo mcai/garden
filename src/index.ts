@@ -19,6 +19,7 @@ export function listen(
         name: string;
         action: (socket: Socket, params: any) => void;
     }[],
+    overrideDateOnCreate?: boolean,
 ) {
     const dataProvider = new SimpleMongoDbDataProvider(mongoDbConnectionString, [
         new SimpleEventLogHook(),
@@ -41,5 +42,9 @@ export function listen(
 
     scheduler.start();
 
-    SimpleServer.listen(new SimpleDataProviderController(dataProvider), port, socketIOEventHandlers);
+    SimpleServer.listen(
+        new SimpleDataProviderController(dataProvider, overrideDateOnCreate ?? false),
+        port,
+        socketIOEventHandlers,
+    );
 }
