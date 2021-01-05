@@ -1,19 +1,36 @@
 import { SimpleFileProvider } from "./SimpleFileProvider";
+import { Promise } from "mongoose";
+import OSS from "ali-oss";
 
 export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
+    private ossClient?: OSS;
+
+    constructor(region: string, accessKeyId: string, accessKeySecret: string, bucket: string) {
+        this.ossClient = new OSS({
+            region: region,
+            accessKeyId: accessKeyId,
+            accessKeySecret: accessKeySecret,
+            bucket: bucket,
+        });
+    }
+
     connect(): Promise<void> {
-        return Promise.resolve(undefined);
+        return Promise.resolve(null);
     }
 
-    create(bucket: string, data: any): Promise<{ key: string }> {
-        return Promise.resolve({ key: "" });
+    async getOne(key: string): Promise<{ data: any }> {
+        const result = await this.ossClient?.get(key);
+
+        return {
+            data: result?.content,
+        };
     }
 
-    delete(bucket: string, key: string): Promise<void> {
-        return Promise.resolve(undefined);
+    async create(key: string, data: any): Promise<void> {
+        await this.ossClient?.put(key, data);
     }
 
-    getOne(bucket: string, key: string): Promise<{ data: any }> {
-        return Promise.resolve({ data: undefined });
+    async delete(key: string): Promise<void> {
+        await this.ossClient?.delete(key);
     }
 }

@@ -1,19 +1,9 @@
 export interface SimpleFileProvider {
     connect(): Promise<void>;
 
-    getOne(
-        bucket: string,
-        key: string,
-    ): Promise<{
-        data: any;
-    }>;
+    getOne(key: string): Promise<{ data: any }>;
 
-    create(
-        bucket: string,
-        data: any,
-    ): Promise<{
-        key: string;
-    }>;
+    create(key: string, data: any): Promise<void>;
 
-    delete(bucket: string, key: string): Promise<void>;
+    delete(key: string): Promise<void>;
 }
