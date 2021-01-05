@@ -16,7 +16,7 @@ export class SimpleFileProviderController implements SimpleController {
     }
 
     register(app: express.Express): void {
-        app.get(`/:bucket/getOne`, async (req, res) => {
+        app.get(`/buckets/:bucket/getOne`, async (req, res) => {
             const bucket = SimpleFileProviderController.getBucket(req);
 
             const { key } = req.query;
@@ -24,7 +24,7 @@ export class SimpleFileProviderController implements SimpleController {
             return res.json(result);
         });
 
-        app.post(`/:bucket/create`, async (req, res) => {
+        app.post(`/buckets/:bucket/create`, async (req, res) => {
             const bucket = SimpleFileProviderController.getBucket(req);
 
             const { key, data } = req.body;
@@ -33,7 +33,7 @@ export class SimpleFileProviderController implements SimpleController {
             return res.json(result);
         });
 
-        app.post(`/:bucket/delete`, async (req, res) => {
+        app.post(`/buckets/:bucket/delete`, async (req, res) => {
             const bucket = SimpleFileProviderController.getBucket(req);
 
             const { key } = req.body;
