@@ -5,12 +5,11 @@ import OSS from "ali-oss";
 export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
     private ossClient?: OSS;
 
-    constructor(region: string, accessKeyId: string, accessKeySecret: string, bucket: string) {
+    constructor(region: string, accessKeyId: string, accessKeySecret: string) {
         this.ossClient = new OSS({
             region: region,
             accessKeyId: accessKeyId,
             accessKeySecret: accessKeySecret,
-            bucket: bucket,
         });
     }
 
@@ -18,7 +17,9 @@ export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
         return Promise.resolve(null);
     }
 
-    async getOne(key: string): Promise<{ data: any }> {
+    async getOne(bucket: string, key: string): Promise<{ data: any }> {
+        this.ossClient?.useBucket(bucket);
+
         const result = await this.ossClient?.get(key);
 
         return {
@@ -26,11 +27,15 @@ export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
         };
     }
 
-    async create(key: string, data: any): Promise<void> {
+    async create(bucket: string, key: string, data: any): Promise<void> {
+        this.ossClient?.useBucket(bucket);
+
         await this.ossClient?.put(key, data);
     }
 
-    async delete(key: string): Promise<void> {
+    async delete(bucket: string, key: string): Promise<void> {
+        this.ossClient?.useBucket(bucket);
+
         await this.ossClient?.delete(key);
     }
 }
