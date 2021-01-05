@@ -17,7 +17,7 @@ export function listen(
     mongoDbConnectionString: string,
     port: number,
     aliyunOssOption?: {
-        region: string;
+        endpoint: string;
         accessKeyId: string;
         accessKeySecret: string;
     },
@@ -43,7 +43,7 @@ export function listen(
 
     if (aliyunOssOption) {
         const fileProvider = new SimpleAliyunOssFileProvider(
-            aliyunOssOption.region,
+            aliyunOssOption.endpoint,
             aliyunOssOption.accessKeyId,
             aliyunOssOption.accessKeySecret,
         );

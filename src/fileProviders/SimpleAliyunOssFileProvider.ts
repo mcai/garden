@@ -5,9 +5,9 @@ import OSS from "ali-oss";
 export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
     private ossClient?: OSS;
 
-    constructor(region: string, accessKeyId: string, accessKeySecret: string) {
+    constructor(endpoint: string, accessKeyId: string, accessKeySecret: string) {
         this.ossClient = new OSS({
-            region: region,
+            endpoint: endpoint,
             accessKeyId: accessKeyId,
             accessKeySecret: accessKeySecret,
         });
