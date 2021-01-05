@@ -8,7 +8,7 @@ const port = 3721;
 
 const socket = SocketIOClientHelper.createClient("localhost", port);
 
-listen(connectionString, port, undefined, [
+listen(connectionString, port, undefined, undefined, [
     {
         every: CronHelper.everyMinute,
         name: "note.count",

@@ -9,7 +9,7 @@ import { Socket } from "socket.io";
 
 export class SimpleServer {
     static listen(
-        controller: SimpleController,
+        controllers: SimpleController[],
         port: number,
         socketIOEventHandlers?: {
             name: string;
@@ -37,7 +37,9 @@ export class SimpleServer {
             next();
         });
 
-        controller.register(app);
+        controllers.forEach((controller) => {
+            controller.register(app);
+        });
 
         const server = createServer(app);
 

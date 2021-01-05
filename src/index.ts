@@ -9,10 +9,18 @@ import { SimpleFormatting } from "./utils/SimpleFormatting";
 import moment from "moment";
 import cronstrue from "cronstrue";
 import { Socket } from "socket.io";
+import { SimpleAliyunOssFileProvider } from "./fileProviders/SimpleAliyunOssFileProvider";
+import { SimpleController } from "./controllers/SimpleController";
 
 export function listen(
     mongoDbConnectionString: string,
     port: number,
+    aliyunOssOption?: {
+        region: string;
+        accessKeyId: string;
+        accessKeySecret: string;
+        bucket: string;
+    },
     hooks?: SimpleHook[],
     tasks?: { every: string; name: string; action: (dataProvider: SimpleDataProvider) => Promise<any> }[],
     socketIOEventHandlers?: {
@@ -21,12 +29,32 @@ export function listen(
     }[],
     overrideDateOnCreate?: boolean,
 ) {
+    let controllers: SimpleController[] = [];
+
     const dataProvider = new SimpleMongoDbDataProvider(mongoDbConnectionString, [
         new SimpleEventLogHook(),
         ...(hooks ?? []),
     ]);
 
     (async () => await dataProvider.connect())();
+
+    const dataProviderController = new SimpleDataProviderController(dataProvider, overrideDateOnCreate ?? false);
+    controllers = [...controllers, dataProviderController];
+
+    if (aliyunOssOption) {
+        const fileProvider = new SimpleAliyunOssFileProvider(
+            aliyunOssOption.region,
+            aliyunOssOption.accessKeyId,
+            aliyunOssOption.accessKeySecret,
+            aliyunOssOption.bucket,
+        );
+
+        (async () => await fileProvider.connect())();
+
+        // TODO
+        // const fileProviderController = new SimpleFileProviderController(fileProvider);
+        // controllers = [...controllers, fileProviderController];
+    }
 
     const scheduler = new SimpleCronPlanScheduler();
 
@@ -42,9 +70,5 @@ export function listen(
 
     scheduler.start();
 
-    SimpleServer.listen(
-        new SimpleDataProviderController(dataProvider, overrideDateOnCreate ?? false),
-        port,
-        socketIOEventHandlers,
-    );
+    SimpleServer.listen(controllers, port, socketIOEventHandlers);
 }
