@@ -6,6 +6,7 @@ import { SimpleFormatting } from "../utils/SimpleFormatting";
 import { createServer } from "http";
 import { SocketIOServerHelper } from "../realtime/SocketIOServerHelper";
 import { Socket } from "socket.io";
+import fileUpload from "express-fileupload";
 
 export class SimpleServer {
     static listen(
@@ -20,6 +21,11 @@ export class SimpleServer {
 
         app.use(express.json({ limit: "100mb" }));
         app.use(express.urlencoded({ limit: "100mb", extended: true }));
+        app.use(
+            fileUpload({
+                limits: { fileSize: 100 * 1024 * 1024 },
+            }),
+        );
 
         app.use(cors());
 

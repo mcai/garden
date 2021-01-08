@@ -2,6 +2,7 @@ import express from "express";
 import { SimpleController } from "./SimpleController";
 import { singular } from "pluralize";
 import { SimpleFileProvider } from "../fileProviders/SimpleFileProvider";
+import { UploadedFile } from "express-fileupload";
 
 export class SimpleFileProviderController implements SimpleController {
     fileProvider: SimpleFileProvider;
@@ -29,7 +30,18 @@ export class SimpleFileProviderController implements SimpleController {
 
             const { key, data } = req.body;
 
-            const result = await this.fileProvider.create(bucket, key, data);
+            const result = await this.fileProvider.create(bucket, key, new Buffer(data));
+            return res.json(result);
+        });
+
+        app.post(`/buckets/:bucket/upload`, async (req, res) => {
+            const bucket = SimpleFileProviderController.getBucket(req);
+
+            const { key } = req.body;
+
+            const file = req.files?.file as UploadedFile;
+
+            const result = await this.fileProvider.create(bucket, key, file.data);
             return res.json(result);
         });
 

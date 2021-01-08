@@ -27,7 +27,7 @@ export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
         };
     }
 
-    async create(bucket: string, key: string, data: any): Promise<void> {
+    async create(bucket: string, key: string, data: Buffer): Promise<void> {
         this.ossClient?.useBucket(bucket);
 
         await this.ossClient?.put(key, data);
