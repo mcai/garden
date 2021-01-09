@@ -22,8 +22,10 @@ export class SimpleAliyunOssFileProvider implements SimpleFileProvider {
 
         const result = await this.ossClient?.get(key);
 
+        const content: Buffer = result?.content;
+
         return {
-            data: result?.content,
+            data: content.toString("base64"),
         };
     }
 
