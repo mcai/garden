@@ -36,7 +36,7 @@ export class SimpleFileProviderController implements SimpleController {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());
             console.debug(`[${now} SimpleServer] data: ${result.data}`);
 
-            const img = Buffer.from("data:image/jpeg;base64," + result.data, "base64");
+            const img = Buffer.from(result.data, "base64");
 
             res.writeHead(200, {
                 "Content-Type": "image/jpeg",
@@ -54,7 +54,9 @@ export class SimpleFileProviderController implements SimpleController {
             const now = SimpleFormatting.toFormattedDateTimeString(moment());
             console.debug(`[${now} SimpleServer] data: ${data}`);
 
-            const result = await this.fileProvider.create(bucket, key, new Buffer(data));
+            const img = Buffer.from(data, "base64");
+
+            const result = await this.fileProvider.create(bucket, key, img);
             return res.json(result);
         });
 
