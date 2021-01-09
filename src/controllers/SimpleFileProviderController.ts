@@ -3,6 +3,8 @@ import { SimpleController } from "./SimpleController";
 import { singular } from "pluralize";
 import { SimpleFileProvider } from "../fileProviders/SimpleFileProvider";
 import { UploadedFile } from "express-fileupload";
+import { SimpleFormatting } from "../utils/SimpleFormatting";
+import moment from "moment";
 
 export class SimpleFileProviderController implements SimpleController {
     fileProvider: SimpleFileProvider;
@@ -31,6 +33,9 @@ export class SimpleFileProviderController implements SimpleController {
             const { key } = req.query;
             const result = await this.fileProvider.getOne(bucket, key as any);
 
+            const now = SimpleFormatting.toFormattedDateTimeString(moment());
+            console.debug(`[${now} SimpleServer] data: ${result.data}`);
+
             const img = Buffer.from(result.data, "base64");
 
             res.writeHead(200, {
@@ -45,6 +50,9 @@ export class SimpleFileProviderController implements SimpleController {
             const bucket = SimpleFileProviderController.getBucket(req);
 
             const { key, data } = req.body;
+
+            const now = SimpleFormatting.toFormattedDateTimeString(moment());
+            console.debug(`[${now} SimpleServer] data: ${data}`);
 
             const result = await this.fileProvider.create(bucket, key, new Buffer(data));
             return res.json(result);
