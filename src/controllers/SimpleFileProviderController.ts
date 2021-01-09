@@ -25,6 +25,22 @@ export class SimpleFileProviderController implements SimpleController {
             return res.json(result);
         });
 
+        app.get(`/buckets/:bucket/downloadAsBase64Image`, async (req, res) => {
+            const bucket = SimpleFileProviderController.getBucket(req);
+
+            const { key } = req.query;
+            const result = await this.fileProvider.getOne(bucket, key as any);
+
+            const img = Buffer.from(result.data, "base64");
+
+            res.writeHead(200, {
+                "Content-Type": "image/jpeg",
+                "Content-Length": img.length,
+            });
+
+            res.end(img);
+        });
+
         app.post(`/buckets/:bucket/create`, async (req, res) => {
             const bucket = SimpleFileProviderController.getBucket(req);
 
@@ -41,8 +57,8 @@ export class SimpleFileProviderController implements SimpleController {
 
             const file = req.files?.file as UploadedFile;
 
-            const result = await this.fileProvider.create(bucket, key, file.data);
-            return res.json(result);
+            await this.fileProvider.create(bucket, key, file.data);
+            return res.json({});
         });
 
         app.post(`/buckets/:bucket/delete`, async (req, res) => {
